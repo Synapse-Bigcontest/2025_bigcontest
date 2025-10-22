@@ -52,10 +52,10 @@ class FestivalRecommender:
         검색 엔진은 '축제 소개 내용'을 기반으로 유사도를 측정하여 축제를 찾아냅니다.
     
         [가게 프로필]
-        {store_profile}
+        {self.store_profile}
 
         [사용자 질문]
-        {user_query}
+        {self.user_query}
         {intent_prompt}
 
         [검색 키워드 생성 가이드]
