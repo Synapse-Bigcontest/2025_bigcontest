@@ -45,7 +45,7 @@ AI 에이전트(`Orchestrator`)는 이 질문을 이해하고, **가게의 상�
 ## 📂 프로젝트 구조
 
 ``` bash
-AI_FESTIVAL_CONSULTANT/
+MarketSync/
 ├── orchestrator.py           # AI 에이전트 (Tool-Calling Agent)
 ├── streamlit_app.py          # Streamlit 웹 인터페이스 (UI)
 ├── config.py                 # 프로젝트 설정 중앙화 (경로, API, 모델명 등)
