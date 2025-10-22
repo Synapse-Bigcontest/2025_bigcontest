@@ -7,6 +7,7 @@ from pathlib import Path
 PROJECT_ROOT = Path(__file__).resolve().parent
 PATH_DATA_DIR = PROJECT_ROOT / 'data'
 PATH_VECTORSTORE_DIR = PROJECT_ROOT / 'vectorstore'
+ASSETS =  PROJECT_ROOT / "assets"
 
 # Data Files
 PATH_FINAL_DF = PATH_DATA_DIR / 'final_df.csv'
