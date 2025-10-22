@@ -102,26 +102,31 @@ graph TD
     
     C --> D{"Tool Routing (LLM 의도 분석 후 도구 선택)"}
     
-    D --> E["Tool: recommend_festivals modules/tools/festival_recommender.py"]
-    E --> F["축제 Top3 List (FAISS 검색 + LLM 동적 평가)"]
+    %% RAG (축제 추천) 경로
+    D --> E["Tool: recommend_festivals"]
+    E --> EM["Embedding Model (HuggingFace, Google 등)"]
+    E --> VSF["FAISS (축제 벡터 DB)"]
     
-    D --> G["Tool: search_contextual_marketing_strategy modules/tools/marketing_strategy.py"]
-    G --> H["맞춤 전략 Text (RAG 검색 + LLM 전략 생성)"]
+    %% RAG (마케팅 전략) 경로
+    D --> G["Tool: search_contextual_marketing_strategy"]
+    G --> EM
+    G --> VSM["FAISS (마케팅 전략 DB)"]
     
-    D --> I["Tool: analyze_merchant_profile modules/tools/profile_analyzer.py"]
-    I --> J["가게 분석 Text (LLM SWOT 분석)"]
+    %% 기타 분석 도구
+    D --> I["Tool: analyze_merchant_profile"]
+    D --> K["Tool: analyze_festival_profile"]
     
-    D --> K["Tool: analyze_festival_profile modules/tools/profile_analyzer.py"]
-    K --> L["축제 분석 Text (LLM 축제 요약)"]
+    %% 도구 결과 취합
+    E --> C
+    G --> C
+    I --> C
+    K --> C
     
-    F --> C
-    H --> C
-    J --> C
-    L --> C
-    
+    %% 최종 답변
     C --> A
     A --> M["사용자 (최종 AI 컨설팅 답변 출력)"]
 
+    %% --- Styling ---
     style A fill:#4CAF50,color:#fff
     style B fill:#FF9800,color:#fff
     style C fill:#E91E63,color:#fff
@@ -130,6 +135,12 @@ graph TD
     style G fill:#03A9F4,color:#fff
     style I fill:#03A9F4,color:#fff
     style K fill:#03A9F4,color:#fff
+    style M fill:#607D8B,color:#fff
+    
+    %% 새로 추가된 노드 스타일
+    style EM fill:#4DD0E1,color:#000
+    style VSF fill:#FFC107,color:#000
+    style VSM fill:#FFC107,color:#000
 ```
 
 ------------------------------------------------------------------------
