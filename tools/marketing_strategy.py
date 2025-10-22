@@ -75,6 +75,7 @@ def search_contextual_marketing_strategy(user_query: str, store_profile: str) ->
         2.  각 전략은 구체적인 실행 방안을 포함해야 합니다.
         3.  친절하고 전문적인 말투를 사용하세요.
         4.  아래 [출력 형식]을 정확히 지켜주세요.
+        5.  **취소선 금지**: 절대로 `~~text~~`와 같은 취소선 마크다운을 사용하지 마세요.
 
         [출력 형식]
         사장님 가게의 특성을 고려한 3가지 마케팅 아이디어를 제안해 드립니다.
@@ -170,6 +171,7 @@ def create_festival_specific_marketing_strategy(festival_name: str, store_profil
         3.  전략은 1가지만 깊이 있게 제안합니다.
         4.  친절하고 전문적인 말투를 사용하세요.
         5.  아래 [출력 형식]을 정확히 지켜주세요.
+        6.  **취소선 금지**: 절대로 `~~text~~`와 같은 취소선 마크다운을 사용하지 마세요.
 
         [출력 형식]
         ### 🎈 {json.loads(festival_profile_str).get('축제명', festival_name)} 맞춤형 마케팅 전략
