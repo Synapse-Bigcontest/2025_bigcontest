@@ -92,6 +92,7 @@ def search_contextual_marketing_strategy(user_query: str, store_profile: str) ->
         * **기대 효과:** (이 전략을 통해 얻을 수 있는 구체적인 효과)
         """
 
+
         try:
             response = llm.invoke(prompt)
             logger.info("--- [Tool] RAG + LLM 답변 생성 완료 ---")
