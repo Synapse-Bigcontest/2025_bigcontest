@@ -3,6 +3,7 @@
 import json
 import traceback
 from typing import List, Dict, Any, Optional, Tuple
+import pandas as pd
 
 from langchain_core.messages import HumanMessage 
 from langchain_community.vectorstores import FAISS
@@ -223,36 +224,68 @@ class FestivalRecommender:
         hybrid_results.sort(key=lambda x: x.get("score_hybrid", 0), reverse=True)
         return hybrid_results
 
+
+    # 2026년 날짜 예측 헬퍼 함수
+    def _predict_next_year_date(self, date_str_2025: Optional[str]) -> str:
+        """2025년 날짜 문자열(YYYY.MM.DD~...)을 받아 2026년 예상 시기를 텍스트로 반환합니다."""
+        if not date_str_2025 or not isinstance(date_str_2025, str):
+            return "2026년 정보 없음" # 날짜 정보 없으면 명시적 반환
+
+        try:
+            # "~" 앞부분만 사용하여 시작 날짜 파싱 (YYYY.MM.DD 형식 가정)
+            start_date_str = date_str_2025.split('~')[0].strip()
+            date_2025 = pd.to_datetime(start_date_str, format='%Y.%m.%d', errors='coerce')
+
+            if pd.isna(date_2025): # YYYY.MM.DD 파싱 실패 시 다른 형식 시도 (예: YYYY-MM-DD)
+                date_2025 = pd.to_datetime(start_date_str, errors='coerce')
+
+            if pd.isna(date_2025): # 최종 파싱 실패 시
+                 logger.warning(f"날짜 예측 실패: '{start_date_str}' (원본: '{date_str_2025}') 형식을 인식할 수 없습니다.")
+                 return f"2026년 정보 없음 (2025년: {date_str_2025})"
+
+            month = date_2025.month
+            day = date_2025.day
+
+            if day <= 10:
+                timing = f"{month}월 초"
+            elif day <= 20:
+                timing = f"{month}월 중순"
+            else:
+                timing = f"{month}월 말"
+
+            return f"2026년 {timing}경 예상 (2025년: {date_str_2025})"
+        except Exception as e:
+            logger.error(f"날짜 예측 중 오류 ({date_str_2025}): {e}")
+            return f"2026년 정보 없음 (오류: {e})"
+
     def _format_recommendation_results(
-        self, 
-        ranked_list: List[Dict[str, Any]], 
+        self,
+        ranked_list: List[Dict[str, Any]],
         top_k: int
     ) -> List[Dict[str, Any]]:
-        """
-        (5단계) 최종 순위가 매겨진 상위 K개 축제를 바탕으로 사용자에게 보여줄 최종 JSON을 생성합니다.
-        """
+        
+        """ (5단계) 최종 답변 포맷팅 (LLM) """
         logger.info(f"--- [Filter 5/5] 최종 답변 포맷팅 (LLM) 시작 (Top {top_k}) ---")
-        
         top_candidates = ranked_list[:top_k]
-        
         candidates_data = []
         for candidate in top_candidates:
             meta = candidate["metadata"]
+            date_2025 = meta.get('2025_기간')
+            predicted_2026_timing = self._predict_next_year_date(date_2025)
             candidates_data.append({
                 "축제명": meta.get('축제명'),
-                "2025_기간": meta.get('2025_기간'),
+                "소개": meta.get('소개'),
+                "predicted_2026_timing": predicted_2026_timing,
                 "주요고객층": meta.get('주요고객층'),
                 "주요방문자": meta.get('주요방문자'),
                 "축제인기": meta.get('축제인기'),
                 "홈페이지": meta.get('홈페이지'),
-                "추천_점수": round(candidate["score_hybrid"], 1), 
+                "추천_점수": round(candidate["score_hybrid"], 1),
                 "추천_근거_키워드": f"키워드/소개 일치도 ({round(candidate['score_embedding'], 0)}점)",
                 "추천_근거_동적": f"가게 맞춤성({round(candidate['score_dynamic'], 0)}점): {candidate['score_dynamic_reason']}"
             })
-        
         candidates_json_str = json.dumps(candidates_data, ensure_ascii=False, indent=2)
 
-        # --- (사용자 요청) 프롬프트 원본 유지 ---
         prompt = f"""
         당신은 소상공인 컨설턴트입니다. [가게 프로필]과 AI가 분석한 [최종 추천 축제 목록]을 바탕으로,
         사장님께 제안할 최종 추천 답변을 생성하세요.
@@ -260,38 +293,37 @@ class FestivalRecommender:
         [가게 프로필]
         {self.store_profile}
 
-        [최종 추천 축제 목록 (JSON)]
+        [최종 추천 축제 목록 (JSON) - 소개, 2026년 예상 시기 포함]
         {candidates_json_str}
 
         [최종 답변 생성 가이드라인]
-        1.  **[최종 추천 축제 목록]을 그대로 사용**하되, '추천_이유'를 더 매끄럽게 다듬으세요.
-        2.  '추천_이유'는 '추천_근거_키워드'와 '추천_근거_동적'을 조합하여 서술형으로 작성하세요.
-        3.  **(중요) 2026년 날짜 예측**: '2025_기간' 정보를 바탕으로 '2026년 예상 시기'를 "2026년에도 비슷한 시기(O월 O일경)에 개최될 것으로 예상됩니다."와 같이 '축제_기본정보'에 포함하세요.
-        4.  **(중요) 단점 제외**: '단점'이나 '부적합한 이유'는 절대 출력하지 마세요.
-        5.  **출력 형식 (JSON)**: 반드시 아래의 JSON 리스트 형식으로만 응답하세요.
+        1.  **[최종 추천 축제 목록]의 모든 정보**를 사용하여 최종 답변을 JSON 형식으로 생성합니다.
+        2.  '추천_이유'는 '추천_근거_키워드'와 '추천_근거_동적'을 조합하여 **자연스러운 서술형 문장**으로 작성하세요.
+        3.  **(수정) '축제_기본정보'**: 입력 JSON의 **'소개', '주요고객층', '주요방문자', '축제인기'** 정보를 조합하여 축제를 설명하는 자연스러운 문장으로 작성하세요. '소개' 내용을 바탕으로 축제의 핵심 내용을 요약하고, 고객층/방문자/인기도 정보를 덧붙입니다. (예: "**'{{소개 요약}}'**을(를) 주제로 하는 축제이며, 주로 **{{주요고객층}}**이 방문하고 **{{주요방문자}}** 특성을 보입니다. (인기도: **{{축제인기}}**)")
+        4.  **(중요) '2026년 예상 시기'**: 입력 JSON에 있는 **`predicted_2026_timing` 값을 그대로** 가져와서 출력 JSON의 `'2026년 예상 시기'` 필드 값으로 사용하세요. **절대 직접 계산하거나 수정하지 마세요.**
+        5.  **(중요) 단점 제외**: '단점'이나 '부적합한 이유'는 절대 출력하지 마세요.
+        6.  **(중요) 취소선 금지**: 절대로 `~~text~~`와 같은 취소선 마크다운을 사용하지 마세요.
+        7.  **출력 형식 (JSON)**: 반드시 아래의 JSON 리스트 형식으로만 응답하세요. 다른 설명 없이 JSON만 출력해야 합니다.
 
         [응답 형식 (JSON 리스트)]
         [
           {{
             "축제명": "[축제 이름]",
-            "축제_기본정보": "2025년 개최 기간은 [2025_기간]이며, 2026년에도 비슷한 시기(O월 O일경)에 개최될 것으로 예상됩니다. 이 축제는 [주요고객층]이 주로 방문하며, [주요방문자] 특성을 보입니다. (인기도: [축제인기])",
-            "추천_이유": "[가게 프로필과 추천 근거를 바탕으로 이 축제를 추천하는 이유를 서술형으로 작성. (예: 이 축제는 사장님 가게의 '키워드'와 일치도가 높고, 가게의 핵심 고객인 '30대 여성'의 방문 비율(주요고객층)이 높아 시너지가 예상됩니다.)]",
+            "추천_점수": 95.2,
+            "축제_기본정보": "[축제 소개 요약, 주요 고객층, 주요 방문자, 인기도를 조합한 서술형 문장]",
+            "추천_이유": "[가게 프로필과 추천 근거를 바탕으로 이 축제를 추천하는 이유를 서술형으로 작성.]",
             "홈페이지": "[축제 홈페이지 URL]",
-            "추천_점수": 95.2
+            "2026년 예상 시기": "[입력 JSON의 predicted_2026_timing 값을 그대로 사용]"
           }},
           ...
         ]
         """
-        
         response_text = ""
         try:
             response = self.llm_temp_03.invoke([HumanMessage(content=prompt)])
             response_text = response.content.strip()
-            
-            # 5번 제안: 공통 파서 사용
             final_list = extract_json_from_llm_response(response_text)
             return final_list
-
         except (ValueError, json.JSONDecodeError) as e:
             logger.error(f"--- [Filter 5/5 CRITICAL ERROR] 최종 답변 JSON 파싱 실패: {e} ---")
             logger.debug(f"LLM 원본 응답 (앞 500자): {response_text[:500]} ...")
@@ -299,6 +331,7 @@ class FestivalRecommender:
         except Exception as e:
             logger.critical(f"--- [Filter 5/5 CRITICAL ERROR] (Outer Catch) {e} ---", exc_info=True)
             return [{"error": f"최종 답변 생성 중 알 수 없는 오류 발생: {e}"}]
+
 
     def run(self, search_k: int = 10, top_k: int = 3) -> List[Dict[str, Any]]:
         """
