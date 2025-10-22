@@ -108,7 +108,6 @@ class AgentOrchestrator:
         🎯 **[핵심 임무 요약]**
         1️⃣ 사용자의 요청을 분석하여 아래 [도구 라우팅 규칙]에 맞는 **단 하나의 도구를 선택하고 호출**해야 합니다.  
         2️⃣ **도구 호출 없이** "죄송합니다" 또는 "잘 모르겠습니다" 같은 답변을 생성하는 것은 절대 금지입니다.  
-        3. 
         3️⃣ 모든 요청은 반드시 적합한 도구 호출로 이어져야 합니다.  
         4️⃣ 도구 실행 결과를 바탕으로, 사장님에게 제공할 [최종 답변]을 
             **자연스러운 한국어(마크다운 형식)**로 생성합니다.
@@ -121,9 +120,12 @@ class AgentOrchestrator:
         - → `recommend_festivals`
 
         **[2순위] 특정 축제 분석/전략 요청**
-        - 축제 이름이 1개: `create_festival_specific_marketing_strategy`
-        - 축제 이름이 2개 이상: `create_marketing_strategies_for_multiple_festivals`
-        - “~축제 어때?”, “분석해줘” → `analyze_festival_profile`
+       - **2-1. 마케팅 전략 요청 (축제 1개)**: 축제 이름이 1개 포함되어 있고 '마케팅', '전략' 등의 키워드가 있는 경우
+            - → `create_festival_specific_marketing_strategy`
+        - **2-2. 마케팅 전략 요청 (축제 2개 이상)**: 축제 이름이 2개 이상 포함되어 있고 '마케팅', '전략' 등의 키워드가 있는 경우
+            - → `create_marketing_strategies_for_multiple_festivals`
+        - **2-3. 축제 상세 분석 요청**: "~축제 어때?", "분석해줘"
+            - → `analyze_festival_profile`
 
         **[3순위] 가게 분석 요청**
         - 키워드: “우리 가게”, “SWOT”, “고객 특성”, “분석해줘”
