@@ -1,4 +1,4 @@
-# 🎈 소상공인 마케팅 & 축제 참여 AI 상담 컨설턴트 (Agentic RAG)
+# 🎈 AI 지역축제 참여 솔루션 (Agentic RAG)
 
 ### Agentic RAG 기반 소상공인 맞춤형 지역 축제 컨설팅 시스템
 
