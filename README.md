@@ -141,9 +141,9 @@ graph TD
 
     subgraph "🔍 Filtering Pipeline (modules/filtering.py)"
         Tool_Rec --> Step1["1️⃣ LLM 쿼리 재작성"]
-        Step1 --> Step2["2️⃣ FAISS 벡터 검색<br>(유사 축제 후보 추출)"]
+        Step1 --> Step2["2️⃣ FAISS 벡터 검색<br>(유사 축제 후보 추출<br>using Embedding Model)"]
         Step2 --> VSF["📂 FAISS (축제 DB)"]
-        Step2 --> EM["🧬 Embedding Model<br>(BGE-m3-ko)"]
+        // EM node removed
         Step2 --> Step3["3️⃣ LLM 동적 속성 평가<br>(가게 맞춤성 판단)"]
         Step3 --> LLM1["🤖 LLM (Dynamic Eval)"]
         Step3 --> Step4["4️⃣ 하이브리드 점수 계산<br>(유사도 + 맞춤성)"]
@@ -154,12 +154,11 @@ graph TD
         Step5 -- "Top3 축제 추천 결과" --> Agent
     end
 
-    %% --- Styles ---
+    %% 스타일
     style Agent fill:#E91E63,color:#fff
     style Tool_Rec fill:#03A9F4,color:#fff
     style Step1,Step2,Step3,Step4,Step5 fill:#81D4FA,color:#000
     style VSF fill:#FFC107,color:#000
-    style EM fill:#4DD0E1,color:#000
     style LLM1 fill:#BA68C8,color:#fff
 ```
 
@@ -179,9 +178,9 @@ graph TD
 
     subgraph "📚 RAG Logic (modules/knowledge_base.py)"
         Tool_RAG --> Step1["1️⃣ LLM 검색 쿼리 생성<br>(가게 프로필 + 질문 기반)"]
-        Step1 --> Step2["2️⃣ FAISS 벡터 검색<br>(마케팅 전략 DB 탐색)"]
+        Step1 --> Step2["2️⃣ FAISS 벡터 검색<br>(마케팅 전략 DB 탐색<br>using Embedding Model)"] // Embedding Model mention added here
         Step2 --> VSM["📂 FAISS (마케팅 DB)"]
-        Step2 --> EM["🧬 Embedding Model"]
+        // EM node removed
         Step2 --> Step3["3️⃣ LLM 답변 생성<br>(검색된 컨텍스트 기반)"]
         Step3 --> LLM2["🤖 LLM (Answer Synthesis)"]
     end
@@ -190,12 +189,12 @@ graph TD
         Step3 -- "생성된 마케팅 전략 텍스트" --> Agent
     end
 
-    %% --- Styles ---
+    %% 스타일
     style Agent fill:#E91E63,color:#fff
     style Tool_RAG fill:#03A9F4,color:#fff
     style Step1,Step2,Step3 fill:#81D4FA,color:#000
     style VSM fill:#FFC107,color:#000
-    style EM fill:#4DD0E1,color:#000
+    // EM style removed
     style LLM2 fill:#BA68C8,color:#fff
 ```
 
