@@ -77,60 +77,127 @@ MarketSync/
 
 ## 🧩 시스템 구성도
 
+### (1) 전체 개요: UI - 에이전트 - API 상호작용
+
+사용자가 UI를 통해 질문하면, 에이전트가 작동하고, 필요시 API 서버와 통신합니다.
+
 ```mermaid
 graph TD
-    A["Streamlit UI (streamlit_app.py)"] --> B["FastAPI Server (api/server.py)"]
-    B --> A
+    subgraph "사용자 인터페이스 & 데이터 서버"
+        A["Streamlit UI (streamlit_app.py)"] <--> B["FastAPI Server (api/server.py)\n가게 프로필/목록 조회"]
+    end
 
-    A --> C["Orchestrator (orchestrator.py)\nAgentExecutor (LangChain)"]
+    subgraph "AI 컨설팅 엔진"
+        C["Orchestrator (orchestrator.py)\nAgentExecutor (LangChain)"]
+        D{"Tool Routing\n(LLM 의도 분석)"}
+        T["다양한 Tools\n(축제추천, 마케팅, 분석 등)"]
+        LLM_Final["LLM (Final Report Generation)"]
+    end
 
-    C --> D{"Tool Routing\n(LLM 의도 분석 + 시스템 프롬프트)"}
+    A -- 사용자 질문 --> C
+    C -- 도구 선택 --> D
+    D -- 도구 실행 요청 --> T
+    T -- 실행 결과 --> C
+    C -- 최종 답변 생성 요청 --> LLM_Final
+    LLM_Final -- 최종 보고서 --> A
 
-    %% 도구들
-    D -- 축제 추천 --> E["Tool: recommend_festivals\n(tools/festival_recommender.py)"]
-    D -- 마케팅 전략 (RAG) --> G["Tool: search_contextual_marketing_strategy\n(tools/marketing_strategy.py)"]
-    D -- 가게 분석 --> I["Tool: analyze_merchant_profile\n(tools/profile_analyzer.py)"]
-    D -- 축제 분석 --> K["Tool: analyze_festival_profile\n(tools/profile_analyzer.py)"]
-    D -- 기타 도구 --> O["... (다른 도구들)"]
-
-    %% 도구의 의존성
-    E --> P["Filtering Pipeline\n(modules/filtering.py)"]
-    P --> EM["Embedding Model\n(modules/knowledge_base.py)"]
-    P --> VSF["FAISS (축제 DB)\n(vectorstore/faiss_festival)"]
-    P --> LLM1["LLM (Query Rewrite, Dynamic Eval)\n(modules/llm_provider.py)"]
-
-
-    G --> RAG["RAG Logic\n(modules/knowledge_base.py)"]
-    RAG --> EM
-    RAG --> VSM["FAISS (마케팅 DB)\n(vectorstore/faiss_marketing)"]
-    RAG --> LLM2["LLM (Answer Synthesis)\n(modules/llm_provider.py)"]
-
-    I --> LLM3["LLM (SWOT 분석)\n(modules/llm_provider.py)"]
-    K --> LLM4["LLM (축제 요약)\n(modules/llm_provider.py)"]
-
-    %% 도구 결과 취합
-    E --> C
-    G --> C
-    I --> C
-    K --> C
-    O --> C
-
-    %% 최종 답변 생성 및 출력
-    C --> LLM5["LLM (Final Report Generation)\n(orchestrator.py)"]
-    LLM5 --> A
-    A --> M["사용자 (최종 AI 컨설팅 답변 출력)"]
-
-    %% --- Styling ---
+    %% Styling
     style A fill:#4CAF50,color:#fff
     style B fill:#FF9800,color:#fff
     style C fill:#E91E63,color:#fff
     style D fill:#9C27B0,color:#fff
-    style E,G,I,K,O fill:#03A9F4,color:#fff
-    style P,RAG fill:#81D4FA,color:#000
-    style VSF,VSM fill:#FFC107,color:#000
+    style T fill:#03A9F4,color:#fff
+    style LLM_Final fill:#BA68C8,color:#fff
+```
+
+### (2) 축제 추천 도구 상세 (recommend_festivals)
+
+축제 추천 요청 시 recommend_festivals 도구가 내부적으로 어떻게 작동하는지 보여줍니다. (하이브리드 5단계 파이프라인)
+
+```mermaid
+graph TD
+    subgraph "Orchestrator 요청"
+        Agent["AgentExecutor"] -- 축제 추천 요청 --> Tool_Rec["Tool: recommend_festivals"]
+    end
+
+    subgraph "Filtering Pipeline (modules/filtering.py)"
+        Tool_Rec --> Step1["1. LLM 쿼리 재작성"]
+        Step1 --> Step2["2. FAISS 벡터 검색"]
+        Step2 --> VSF["FAISS (축제 DB)"]
+        Step2 --> EM["Embedding Model"]
+        Step2 --> Step3["3. LLM 동적 속성 평가"]
+        Step3 --> LLM1["LLM (Dynamic Eval)"]
+        Step3 --> Step4["4. 하이브리드 점수 계산"]
+        Step4 --> Step5["5. 최종 결과 포맷팅\n(2026 예측 포함)"]
+    end
+
+    subgraph "결과 반환"
+        Step5 -- Top3 추천 결과 --> Agent
+    end
+
+    %% Styling
+    style Agent fill:#E91E63,color:#fff
+    style Tool_Rec fill:#03A9F4,color:#fff
+    style Step1,Step2,Step3,Step4,Step5 fill:#81D4FA,color:#000
+    style VSF fill:#FFC107,color:#000
     style EM fill:#4DD0E1,color:#000
-    style LLM1,LLM2,LLM3,LLM4,LLM5 fill:#BA68C8,color:#fff
-    style M fill:#607D8B,color:#fff
+    style LLM1 fill:#BA68C8,color:#fff
+```
+
+### (3) 마케팅 전략 (RAG) 도구 상세 (search_contextual_marketing_strategy)
+
+일반적인 마케팅 전략 요청 시 RAG 도구가 어떻게 작동하는지 보여줍니다.
+
+```mermaid
+graph TD
+    subgraph "Orchestrator 요청"
+        Agent["AgentExecutor"] -- 마케팅 전략(RAG) 요청 --> Tool_RAG["Tool: search_contextual_marketing_strategy"]
+    end
+
+    subgraph "RAG Logic (modules/knowledge_base.py)"
+        Tool_RAG --> Step1["1. LLM 검색 쿼리 생성\n(가게 프로필+질문 기반)"]
+        Step1 --> Step2["2. FAISS 벡터 검색"]
+        Step2 --> VSM["FAISS (마케팅 DB)"]
+        Step2 --> EM["Embedding Model"]
+        Step2 --> Step3["3. LLM 답변 생성\n(검색된 내용 기반)"]
+        Step3 --> LLM2["LLM (Answer Synthesis)"]
+    end
+
+    subgraph "결과 반환"
+        Step3 -- 생성된 전략 텍스트 --> Agent
+    end
+
+    %% Styling
+    style Agent fill:#E91E63,color:#fff
+    style Tool_RAG fill:#03A9F4,color:#fff
+    style Step1,Step2,Step3 fill:#81D4FA,color:#000
+    style VSM fill:#FFC107,color:#000
+    style EM fill:#4DD0E1,color:#000
+    style LLM2 fill:#BA68C8,color:#fff
+```
+
+### (4) LLM 기반 분석 도구 상세 (가게/축제 분석)
+
+가게 분석(analyze_merchant_profile) 또는 축제 분석(analyze_festival_profile) 요청 시의 흐름입니다.
+
+```mermaid
+graph TD
+    subgraph "Orchestrator 요청"
+        Agent["AgentExecutor"] -- 가게/축제 분석 요청 --> Tool_Analyze["Tool: analyze_merchant/festival_profile"]
+    end
+
+    subgraph "LLM 분석 (tools/profile_analyzer.py)"
+        Tool_Analyze -- 프로필(JSON) 전달 --> LLM_Analyze["LLM (SWOT/요약 분석)"]
+    end
+
+    subgraph "결과 반환"
+        LLM_Analyze -- 분석 보고서 텍스트 --> Agent
+    end
+
+    %% Styling
+    style Agent fill:#E91E63,color:#fff
+    style Tool_Analyze fill:#03A9F4,color:#fff
+    style LLM_Analyze fill:#BA68C8,color:#fff
 ```
 
 ------------------------------------------------------------------------
