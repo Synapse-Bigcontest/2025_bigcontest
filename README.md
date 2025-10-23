@@ -82,48 +82,53 @@ MarketSync/
 사용자가 UI를 통해 질문하면, **에이전트(Orchestrator)** 가 작동하고, 필요 시 FastAPI 서버나 **여러 도구(Tool)** 와 상호작용합니다.
 
 ```mermaid
-graph TD
+## 🧩 시스템 구성도 (수정본)
 
+시스템의 전체 흐름과 각 핵심 도구의 상세 작동 방식을 시각화했습니다.
+
+### (1) 전체 개요: UI - 에이전트 - API 상호작용
+
+사용자가 UI를 통해 질문하면, **에이전트(Orchestrator)**가 작동하여 의도를 파악하고, 사용 가능한 도구 중 하나를 선택하여 실행합니다. 필요시 API 서버와 통신하며, 최종적으로 에이전트가 생성한 보고서를 UI에 표시합니다.
+
+```mermaid
+graph TD
     %% --- 사용자 & 서버 ---
-    subgraph SG_UserServer ["사용자 인터페이스 & 데이터 서버"]
-        A["🖥️ Streamlit UI<br>(streamlit_app.py)"] <--> B["🚀 FastAPI Server<br>(api/server.py)<br>📊 가게 프로필 / 목록 조회"]
+    subgraph SG_UserServer ["<font size=5>💻 사용자 인터페이스 & 데이터 서버</font>"]
+        direction LR
+        A["<font size=4>🖥️ Streamlit UI</font><br>(streamlit_app.py)<br>사용자 상호작용"] <--> B["<font size=4>🚀 FastAPI Server</font><br>(api/server.py)<br>📊 가게 프로필 / 목록 조회"]
     end
 
     %% --- AI 컨설팅 엔진 ---
-    subgraph SG_Engine ["🧠 AI 컨설팅 엔진"]
-        C["🤖 Orchestrator<br>(orchestrator.py)<br>AgentExecutor (LangChain)"]
-        D{"🎯 Tool Routing<br>LLM 의도 분석"}
+    subgraph SG_Engine ["<font size=5>🧠 AI 컨설팅 엔진</font>"]
+        C["<font size=4>🤖 Orchestrator (핵심 에이전트)</font><br>(orchestrator.py)<br>AgentExecutor (LangChain)"]
+        D{"<font size=4>🚦 Tool Routing</font><br>LLM 의도 분석 & 도구 선택"}
 
-        subgraph SG_Tools ["🧩 등록된 도구 목록 (tools/)"]
-            direction TD 
+        subgraph SG_Tools ["<font size=4>🔧 등록된 도구 목록 (tools/)</font>"]
+            direction TD
             T1["✨ recommend_festivals"]
-            T6["📖 get_festival_profile_by_name"]
-            T5["🏮 analyze_festival_profile"]
             T2["📚 search_contextual_marketing_strategy"]
             T3["🧾 create_festival_specific_marketing_strategy"]
             T3_multi["🧾 create_marketing_strategies_for_multiple_festivals"]
             T4["📊 analyze_merchant_profile"]
+            T5["🏮 analyze_festival_profile"]
+            T6["📖 get_festival_profile_by_name"]
         end
-
-        LLM_Final["🪄 LLM (Final Report Generation)<br>최종 보고서 생성"]
     end
 
     %% --- Connections ---
-    A -- "자연어 질문 입력" --> C
-    C -- "의도 분석" --> D
-    D -- "적합한 도구 선택" --> SG_Tools
-    SG_Tools -- "도구 실행 결과" --> C
-
-    C -- "최종 보고서 생성 요청" --> LLM_Final
-    LLM_Final -- "결과 전달" --> A
+    A -- <font size=3>자연어 질문 입력</font> --> C
+    C -- <font size=3>의도 분석 요청</font> --> D
+    D -- <font size=3>적합 도구 선택/실행</font> --> SG_Tools
+    SG_Tools -- <font size=3>도구 실행 결과</font> --> C
+    C -- <font size=3>최종 보고서 생성/전달</font> --> A
 
     %% --- Styles ---
-    style A fill:#4CAF50,color:#fff
-    style B fill:#FF9800,color:#fff
-    style C fill:#E91E63,color:#fff
-    style D fill:#9C27B0,color:#fff
-    style T1,T2,T3, T3_multi, T4,T5,T6 fill:#03A9F4,color:#fff
-    style LLM_Final fill:#BA68C8,color:#fff
+    style A fill:#4CAF50,color:#fff,stroke:#388E3C,stroke-width:2px
+    style B fill:#FF9800,color:#fff,stroke:#F57C00,stroke-width:2px
+    style C fill:#E91E63,color:#fff,stroke:#C2185B,stroke-width:2px
+    style D fill:#9C27B0,color:#fff,stroke:#7B1FA2,stroke-width:2px,shape:diamond
+    style SG_Tools fill:#E1F5FE, stroke:#0277BD
+    style T1,T2,T3, T3_multi, T4,T5,T6 fill:#03A9F4,color:#fff,stroke:#0288D1,stroke-width:2px,shape:hexagon
 ```
 
 ---
