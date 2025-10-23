@@ -93,26 +93,44 @@ graph TD
     subgraph "🧠 AI 컨설팅 엔진"
         C["🤖 Orchestrator<br>(orchestrator.py)<br>AgentExecutor (LangChain)"]
         D{"🎯 Tool Routing<br>LLM 의도 분석"}
-        
+
+        %% 도구 목록을 세로로 배치
         subgraph "🧩 등록된 도구 목록 (tools/)"
-            T1["✨ recommend_festivals<br>(축제 추천)"]
-            T2["📚 search_contextual_marketing_strategy<br>(RAG 마케팅 전략)"]
-            T3["🧾 create_festival_specific_marketing_strategy<br>(축제별 마케팅 전략)"]
-            T4["📊 analyze_merchant_profile<br>(가게 분석)"]
-            T5["🏮 analyze_festival_profile<br>(축제 분석)"]
-            T6["📖 get_festival_profile_by_name<br>(축제 프로필 조회)"]
+            direction TB
+            T1["✨ recommend_festivals<br>축제 추천"]
+            T2["📚 search_contextual_marketing_strategy<br>RAG 마케팅 전략"]
+            T3["🧾 create_festival_specific_marketing_strategy<br>축제별 마케팅 전략"]
+            T4["📊 analyze_merchant_profile<br>가게 분석"]
+            T5["🏮 analyze_festival_profile<br>축제 분석"]
+            T6["📖 get_festival_profile_by_name<br>축제 프로필 조회"]
         end
-        
+
         LLM_Final["🪄 LLM (Final Report Generation)<br>최종 보고서 생성"]
     end
 
+    %% --- 흐름 ---
     A -- "자연어 질문 입력" --> C
     C -- "의도 분석" --> D
-    D -- "적합한 도구 선택" --> T1 & T2 & T3 & T4 & T5 & T6
-    T1 & T2 & T3 & T4 & T5 & T6 -- "도구 실행 결과" --> C
-    C -- "최종 보고서 생성 요청" --> LLM_Final
-    LLM_Final -- "결과 전달" --> A
+    D -- "적합한 도구 선택" --> T1
+    D -- "적합한 도구 선택" --> T2
+    D -- "적합한 도구 선택" --> T3
+    D -- "적합한 도구 선택" --> T4
+    D -- "적합한 도구 선택" --> T5
+    D -- "적합한 도구 선택" --> T6
 
+    %% 도구 결과 → Orchestrator
+    T1 --> C
+    T2 --> C
+    T3 --> C
+    T4 --> C
+    T5 --> C
+    T6 --> C
+
+    %% LLM 최종 결과
+    C -- "최종 보고서 생성 요청" --> LLM_Final
+    LLM_Final -- "최종 결과 전달" --> A
+
+    %% --- 스타일 ---
     style A fill:#4CAF50,color:#fff
     style B fill:#FF9800,color:#fff
     style C fill:#E91E63,color:#fff
@@ -123,7 +141,7 @@ graph TD
 
 ---
 
-### (2) 축제 추천 도구 상세 — recommend_festivals
+### (2) 축제 추천 도구 상세 — `recommend_festivals`
 
 LLM 기반 **하이브리드 5단계 파이프라인**을 통해,
 가게 맞춤형 축제를 추천합니다.
@@ -160,7 +178,7 @@ graph TD
 
 ---
 
-### (3) 마케팅 전략 (RAG) 도구 상세 — search_contextual_marketing_strategy
+### (3) 마케팅 전략 (RAG) 도구 상세 — `search_contextual_marketing_strategy`
 
 **RAG** 기반으로 **가게 프로필 + 질문 컨텍스트**를 이용해
 가장 관련성 높은 마케팅 전략 문서를 검색하고, LLM이 자연스럽게 요약/제안합니다.
@@ -196,7 +214,7 @@ graph TD
 
 ---
 
-### (4) LLM 기반 분석 도구 상세 — analyze_merchant_profile / analyze_festival_profile
+### (4) LLM 기반 분석 도구 상세 — `analyze_merchant_profile` / `analyze_festival_profile`
 
 가게 또는 축제의 프로필(JSON)을 입력받아
 LLM이 **SWOT 분석 / 주요 특징 요약**을 수행합니다.
