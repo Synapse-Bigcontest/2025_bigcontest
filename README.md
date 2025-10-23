@@ -85,9 +85,9 @@ MarketSync/
 
 ---
 
-### 🧩 시스템 구성도
+## 🧩 시스템 구성도
 
-#### (1) 전체 개요: UI - 에이전트 - API 상호작용
+### (1) 전체 개요: UI - 에이전트 - API 상호작용
 
 사용자가 UI를 통해 질문하면, **에이전트(Orchestrator)** 가 작동하고, 필요 시 FastAPI 서버나 **여러 도구(Tool)** 와 상호작용합니다.
 
@@ -152,7 +152,7 @@ graph TD
 
 ---
 
-#### (2) 축제 추천 도구 상세 — `recommend_festivals`
+### (2) 축제 추천 도구 상세 — `recommend_festivals`
 
 LLM 기반 **하이브리드 5단계 파이프라인**을 통해,
 가게 맞춤형 축제를 추천합니다.
@@ -213,7 +213,7 @@ graph TD
 
 ---
 
-#### (3) 마케팅 전략 (RAG) 도구 상세 — `search_contextual_marketing_strategy`
+### (3) 마케팅 전략 (RAG) 도구 상세 — `search_contextual_marketing_strategy`
 
 **RAG** 기반으로 **가게 프로필 + 질문 컨텍스트**를 이용해
 가장 관련성 높은 마케팅 전략 문서를 검색하고, LLM이 자연스럽게 요약/제안합니다.
@@ -273,7 +273,7 @@ graph TD
 
 ---
 
-#### (4) LLM 기반 분석 도구 상세 — `analyze_merchant_profile` / `analyze_festival_profile`
+### (4) LLM 기반 분석 도구 상세 — `analyze_merchant_profile` / `analyze_festival_profile`
 
 가게 또는 축제의 프로필(JSON)을 입력받아
 LLM이 **SWOT 분석 / 주요 특징 요약**을 수행합니다.
@@ -311,7 +311,7 @@ graph TD
 
 ------------------------------------------------------------------------
 
-### 📍 데이터 흐름 상세
+## 📍 데이터 흐름 상세
 
 1.  **초기 설정 (UI → API → UI)**
     * `streamlit_app.py` 실행 시 `load_data()` 함수가 FastAPI 서버(`api/server.py`)의 `/merchants` 엔드포인트를 호출하여 전체 가맹점 목록(ID, 이름)을 받아옵니다.
