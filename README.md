@@ -132,8 +132,15 @@ graph LR
         
         T_OUT( )
         
-        %% 세로 정렬 강제를 위한 보이지 않는 링크
-        T_IN ~~~ T1 ~~~ T2 ~~~ T3 ~~~ T3_multi ~~~ T4 ~~~ T5 ~~~ T6 ~~~ T_OUT
+        %% ★★★ 핵심 수정: 세로 정렬 강제를 위한 보이지 않는 링크 (개별 라인) ★★★
+        T_IN ~~~ T1
+        T1 ~~~ T2
+        T2 ~~~ T3
+        T3 ~~~ T3_multi
+        T3_multi ~~~ T4
+        T4 ~~~ T5
+        T5 ~~~ T6
+        T6 ~~~ T_OUT
     end
 
     %% ========================
@@ -167,6 +174,7 @@ graph LR
     %% 보이지 않는 노드 스타일
     style T_IN fill:none,stroke:none
     style T_OUT fill:none,stroke:none
+
 ```
 
 ---
