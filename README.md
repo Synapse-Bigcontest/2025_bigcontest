@@ -92,80 +92,62 @@ MarketSync/
 사용자가 UI를 통해 질문하면, **에이전트(Orchestrator)** 가 작동하고, 필요 시 FastAPI 서버나 **여러 도구(Tool)** 와 상호작용합니다.
 
 ```mermaid
-graph LR
+graph TD
     %% ========================
-    %% 1. (좌측) 사용자 인터페이스
+    %% 1. 사용자 인터페이스 & 데이터 서버 (상단)
+    %% - direction LR: 내부 요소(A, B)를 좌우로 배치
     %% ========================
     subgraph SG_UserServer ["💻 사용자 인터페이스 & 데이터 서버"]
-        direction TB
-        A["🖥️ Streamlit UI\n(streamlit_app.py)\n사용자 상호작용"]
-        B["🚀 FastAPI Server\n(api/server.py)\n📊 가게 프로필 / 목록 조회"]
-        A <--> B
+        direction LR
+        A["🖥️ Streamlit UI\n(streamlit_app.py)\n사용자 상호작용"] <--> B["🚀 FastAPI Server\n(api/server.py)\n📊 가게 프로필 / 목록 조회"]
     end
 
     %% ========================
-    %% 2. (중간) AI 컨설팅 엔진 (코어)
+    %% 2. AI 컨설팅 엔진 (하단)
+    %% - direction TB: 내부 요소(C, D, SG_Tools, LLM_Final)를 상하로 배치
     %% ========================
-    subgraph SG_Engine_Core ["🧠 AI 컨설팅 엔진 (코어)"]
+    subgraph SG_Engine ["🧠 AI 컨설팅 엔진"]
         direction TB
         C["🤖 Orchestrator (핵심 에이전트)\n(orchestrator.py)\nAgentExecutor (LangChain)"]
         D{"🚦 Tool Routing\nLLM 의도 분석 & 도구 선택"}
+
+        subgraph SG_Tools ["🔧 등록된 도구 목록 (tools/)"]
+            %% ★★★ direction TB가 상속되어 도구들이 세로로 정렬됩니다 ★★★
+            T1["recommend_festivals\n(축제 추천)"]
+            T2["search_contextual_marketing_strategy\n(RAG 마케팅 전략)"]
+            T3["create_festival_specific_marketing_strategy\n(단일 축제 전략)"]
+            T3_multi["create_marketing_strategies_for_multiple_festivals\n(다수 축제 전략)"]
+            T4["analyze_merchant_profile\n(가게 분석)"]
+            T5["analyze_festival_profile\n(축제 분석)"]
+            T6["get_festival_profile_by_name\n(축제 프로필 조회)"]
+        end
+
         LLM_Final["🪄 LLM (Final Report Generation)\n최종 보고서 생성"]
     end
 
     %% ========================
-    %% 3. (우측) 도구 목록 (★ 서브그래프 제거 ★)
-    %% ========================
-    
-    %% 서브그래프 타이틀을 텍스트 노드로 대체
-    SG_Tools_Title["🔧 등록된 도구 목록 (tools/)"]
-
-    T1["recommend_festivals\n(축제 추천)"]
-    T2["search_contextual_marketing_strategy\n(RAG 마케팅 전략)"]
-    T3["create_festival_specific_marketing_strategy\n(단일 축제 전략)"]
-    T3_multi["create_marketing_strategies_for_multiple_festivals\n(다수 축제 전략)"]
-    T4["analyze_merchant_profile\n(가게 분석)"]
-    T5["analyze_festival_profile\n(축제 분석)"]
-    T6["get_festival_profile_by_name\n(축제 프로필 조회)"]
-    
-    %% ★★★ 세로 정렬 강제를 위한 보이지 않는 링크 (개별 라인) ★★★
-    SG_Tools_Title ~~~ T1
-    T1 ~~~ T2
-    T2 ~~~ T3
-    T3 ~~~ T3_multi
-    T3_multi ~~~ T4
-    T4 ~~~ T5
-    T5 ~~~ T6
-
-    %% ========================
-    %% 4. 전체 흐름 연결 (LR 레이아웃 기준)
+    %% 3. 전체 흐름 연결 (TD 레이아웃 기준)
     %% ========================
     A -- "1. 자연어 질문 입력" --> C
     C -- "2. 의도 분석 요청" --> D
+    D -- "3. 적합 도구 선택/실행" --> SG_Tools
+    SG_Tools -- "4. 도구 실행 결과 반환" --> C
     C -- "5. 최종 보고서 생성 요청" --> LLM_Final
     LLM_Final -- "6. 최종 보고서 반환" --> C
     C -- "7. 최종 결과 전달" --> A
-    
-    %% ★★★ 핵심 수정: T1 (시작) / T6 (끝)에 직접 연결 ★★★
-    D -- "3. 적합 도구 선택/실행" --> T1
-    T6 -- "4. 도구 실행 결과 반환" --> C
 
     %% ========================
-    %% 5. 스타일 지정
+    %% 4. 스타일 지정
     %% ========================
     style A fill:#4CAF50,color:#fff,stroke:#388E3C,stroke-width:2px
     style B fill:#FF9800,color:#fff,stroke:#EF6C00,stroke-width:2px
     style C fill:#E91E63,color:#fff,stroke:#C2185B,stroke-width:2px
     style D fill:#9C27B0,color:#fff,stroke:#7B1FA2,stroke-width:2px,shape:diamond
-    style LLM_Final fill:#BA68C8,color:#fff,stroke:#8E24AA,stroke-width:2px
-    
-    style SG_UserServer fill:#E8F5E9,stroke:#43A047,stroke-width:2px,color:#000
-    style SG_Engine_Core fill:#FFF3E0,stroke:#FB8C00,stroke-width:2px,color:#000
-
-    %% 도구 목록 스타일
+    style SG_Tools fill:#E1F5FE, stroke:#0277BD,color:#000
     style T1,T2,T3,T3_multi,T4,T5,T6 fill:#03A9F4,color:#fff,stroke:#0288D1,stroke-width:2px,shape:hexagon
-    %% 타이틀 노드 스타일
-    style SG_Tools_Title fill:none,stroke:none,font-weight:bold,font-size:16px,color:#000
+    style LLM_Final fill:#BA68C8,color:#fff,stroke:#8E24AA,stroke-width:2px
+    style SG_UserServer fill:#E8F5E9,stroke:#43A047,stroke-width:2px,color:#000
+    style SG_Engine fill:#FFF3E0,stroke:#FB8C00,stroke-width:2px,color:#000
 ```
 
 ---
