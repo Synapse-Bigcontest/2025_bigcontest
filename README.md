@@ -145,19 +145,18 @@ LLM 기반 **하이브리드 5단계 파이프라인**을 통해,
 가게 맞춤형 축제를 추천합니다.
 ```mermaid
 graph TD
-
     subgraph "🧠 Orchestrator 요청"
         Agent["🤖 AgentExecutor"] -- "축제 추천 요청" --> Tool_Rec["🧩 Tool: recommend_festivals"]
     end
 
     subgraph "🔍 Filtering Pipeline (modules/filtering.py)"
         Tool_Rec --> Step1["1️⃣ LLM 쿼리 재작성"]
-        Step1 --> Step2["2️⃣ FAISS 벡터 검색<br>(유사 축제 후보 추출<br>using Embedding Model)"]
+        Step1 --> Step2["2️⃣ FAISS 벡터 검색 (유사 축제 후보 탐색)"]
         Step2 --> VSF["📂 FAISS (축제 DB)"]
-        Step2 --> Step3["3️⃣ LLM 동적 속성 평가<br>(가게 맞춤성 판단)"]
-        Step3 --> LLM1["🤖 LLM (Dynamic Eval)"]
-        Step3 --> Step4["4️⃣ 하이브리드 점수 계산<br>(유사도 + 맞춤성)"]
-        Step4 --> Step5["5️⃣ 최종 결과 포맷팅<br>(Top3 + 2026 예측 포함)"]
+        Step2 --> Step3["3️⃣ LLM 동적 속성 평가 (가게 맞춤성 판단)"]
+        Step3 --> LLM1["🤖 LLM (Dynamic Evaluation)"]
+        Step3 --> Step4["4️⃣ 하이브리드 점수 계산 (유사도 + 맞춤성)"]
+        Step4 --> Step5["5️⃣ 최종 결과 포맷팅 (Top3 + 2026 예측 포함)"]
     end
 
     subgraph "📦 결과 반환"
@@ -186,10 +185,10 @@ graph TD
     end
 
     subgraph "📚 RAG Logic (modules/knowledge_base.py)"
-        Tool_RAG --> Step1["1️⃣ LLM 검색 쿼리 생성<br>(가게 프로필 + 질문 기반)"]
-        Step1 --> Step2["2️⃣ FAISS 벡터 검색<br>(마케팅 전략 DB 탐색<br>using Embedding Model)"]
+        Tool_RAG --> Step1["1️⃣ LLM 검색 쿼리 생성 (가게 프로필 + 질문 기반)"]
+        Step1 --> Step2["2️⃣ FAISS 벡터 검색 (마케팅 DB 탐색)"]
         Step2 --> VSM["📂 FAISS (마케팅 DB)"]
-        Step2 --> Step3["3️⃣ LLM 답변 생성<br>(검색된 컨텍스트 기반)"]
+        Step2 --> Step3["3️⃣ LLM 답변 생성 (검색된 컨텍스트 기반)"]
         Step3 --> LLM2["🤖 LLM (Answer Synthesis)"]
     end
 
@@ -214,7 +213,6 @@ LLM이 **SWOT 분석 / 주요 특징 요약**을 수행합니다.
 
 ```mermaid
 graph TD
-
     subgraph "🧠 Orchestrator 요청"
         Agent["🤖 AgentExecutor"] -- "가게/축제 분석 요청" --> Tool_Analyze["🧩 Tool: analyze_merchant_profile / analyze_festival_profile"]
     end
