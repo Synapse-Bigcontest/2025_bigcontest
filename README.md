@@ -99,7 +99,6 @@ graph TD
         D{"🚦 Tool Routing\nLLM 의도 분석 & 도구 선택"}
 
         subgraph SG_Tools ["🔧 등록된 도구 목록 (tools/)"]
-            %% 'direction TD' 라인 제거 (graph TD와 중복되어 불필요)
             T1["recommend_festivals\n(축제 추천)"]
             T6["get_festival_profile_by_name\n(축제 프로필 조회)"]
             T5["analyze_festival_profile\n(축제 분석)"]
@@ -113,14 +112,22 @@ graph TD
     end
 
     %% ========================
-    %% 연결 관계 (수정)
+    %% 연결 관계 (수정됨)
+    %% - C(Orchestrator)가 모든 흐름을 제어하고
+    %% - 최종 결과를 A(UI)로 전달하도록 수정
     %% ========================
-    A -- "자연어 질문 입력" --> C
-    C -- "의도 분석 요청" --> D
-    D -- "적합 도구 선택/실행" --> SG_Tools  
-    SG_Tools -- "도구 실행 결과" --> C      
-    C -- "최종 보고서 생성 요청" --> LLM_Final
-    LLM_Final -- "최종 결과 전달" --> A
+    
+    %% UI와 API 서버는 상호작용 (데이터 로딩 등)
+    A <--> B
+
+    %% 메인 에이전트 흐름
+    A -- "1. 자연어 질문 입력" --> C
+    C -- "2. 의도 분석 요청" --> D
+    D -- "3. 적합 도구 선택/실행" --> SG_Tools  
+    SG_Tools -- "4. 도구 실행 결과 반환" --> C       
+    C -- "5. 최종 보고서 생성 요청" --> LLM_Final
+    LLM_Final -- "6. 최종 보고서 반환" --> C
+    C -- "7. 최종 결과 전달" --> A
 
     %% ========================
     %% 스타일 지정 (GitHub 호환)
