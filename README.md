@@ -151,7 +151,7 @@ graph TD
         Step2 --> Step3["3️⃣ LLM 동적 속성 평가<br>(가게 맞춤성 판단)"]
         Step3 --> LLM1["🤖 LLM (Dynamic Eval)"]
         Step3 --> Step4["4️⃣ 하이브리드 점수 계산<br>(유사도 + 맞춤성)"]
-        Step4 --> Step5["5️⃣ 최종 결과 포맷팅<br>(Top3)"]
+        Step4 --> Step5["5️⃣ 최종 결과 포맷팅<br>(Top3 + 2026 예측 포함)"]
     end
 
     subgraph "📦 결과 반환"
@@ -175,7 +175,6 @@ graph TD
 
 ```mermaid
 graph TD
-
     subgraph "🧠 Orchestrator 요청"
         Agent["🤖 AgentExecutor"] -- "마케팅 전략 (RAG) 요청" --> Tool_RAG["🧩 Tool: search_contextual_marketing_strategy"]
     end
