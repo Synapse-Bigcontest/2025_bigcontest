@@ -142,35 +142,57 @@ LLM 기반 **하이브리드 5단계 파이프라인**을 통해,
 가게 맞춤형 축제를 추천합니다.
 ```mermaid
 graph TD
-    %% --- Orchestrator 요청 ---
-    subgraph Orchestrator_요청
-        Agent[AgentExecutor] -->|축제 추천 요청| Tool_Rec[Tool: recommend_festivals]
+    %% ========================
+    %% Orchestrator 요청
+    %% ========================
+    subgraph SG_Orchestrator_Req ["🧠 Orchestrator 요청"]
+        Agent["🤖 AgentExecutor"] -- "축제 추천 요청" --> Tool_Rec["🧩 Tool: recommend_festivals"]
     end
 
-    %% --- Filtering Pipeline ---
-    subgraph Filtering_Pipeline_(modules/filtering.py)
-        Tool_Rec --> Step1[1️⃣ LLM 쿼리 재작성]
-        Step1 --> Step2[2️⃣ FAISS 검색 수행]
-        Step2 --> EMB[Embedding Model\n(BGE-m3-ko)]
-        EMB --> VSF[FAISS Vector DB\n(축제 데이터)]
-        Step2 --> Step3[3️⃣ LLM 동적 평가\n가게 맞춤성 판단]
-        Step3 --> LLM1[LLM - Dynamic Evaluation]
-        Step3 --> Step4[4️⃣ 하이브리드 점수 계산\n유사도 + 맞춤성]
-        Step4 --> Step5[5️⃣ 결과 포맷팅\nTop3 + 2026 예측 포함]
+    %% ========================
+    %% 지식 베이스 (수정)
+    %% ========================
+    subgraph SG_KnowledgeBase ["📚 지식 베이스 (modules/knowledge_base.py)"]
+        direction LR
+        EM["🧬 Embedding Model\n(HuggingFace)"]
+        VSF["📂 FAISS (축제 DB)"]
+        EM -- "임베딩 생성 (Offline)" --> VSF
     end
 
-    %% --- 결과 반환 ---
-    subgraph 결과_반환
-        Step5 -->|추천 결과| Agent
+    %% ========================
+    %% Filtering Pipeline
+    %% ========================
+    subgraph SG_Filtering_Pipeline ["🔍 Filtering Pipeline (modules/filtering.py)"]
+        Tool_Rec --> Step1["1️⃣ LLM 쿼리 재작성"]
+        Step1 --> Step2["2️⃣ FAISS 벡터 검색\n(유사 축제 후보 탐색)"]
+        
+        %% RAG 흐름 명확화 (수정)
+        Step2 -- "쿼리 임베딩" --> EM
+        Step2 -- "유사도 검색" --> VSF
+
+        Step2 --> Step3["3️⃣ LLM 동적 속성 평가\n(가게 맞춤성 판단)"]
+        Step3 --> LLM1["🤖 LLM (Dynamic Evaluation)"]
+        Step3 --> Step4["4️⃣ 하이브리드 점수 계산\n(유사도 + 맞춤성)"]
+        Step4 --> Step5["5️⃣ 최종 결과 포맷팅\n(Top3 + 2026 예측 포함)"]
     end
 
-    %% --- 스타일 ---
+    %% ========================
+    %% 결과 반환
+    %% ========================
+    subgraph SG_Result_Return ["📦 결과 반환"]
+        Step5 -- "Top3 축제 추천 결과" --> Agent
+    end
+
+    %% ========================
+    %% 스타일
+    %% ========================
     style Agent fill:#E91E63,color:#fff
     style Tool_Rec fill:#03A9F4,color:#fff
     style Step1,Step2,Step3,Step4,Step5 fill:#81D4FA,color:#000
-    style EMB fill:#4DD0E1,color:#000
     style VSF fill:#FFC107,color:#000
+    style EM fill:#4DD0E1,color:#000 
     style LLM1 fill:#BA68C8,color:#fff
+    style SG_KnowledgeBase fill:#F5F5F5,stroke:#9E9E9E
 ```
 
 ---
