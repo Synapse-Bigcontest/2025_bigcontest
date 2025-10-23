@@ -83,13 +83,11 @@ MarketSync/
 
 ```mermaid
 graph TD
-    %% --- 사용자 인터페이스 & API 서버 ---
     subgraph 사용자_인터페이스_및_API_서버
         direction LR
         A[Streamlit UI\n(streamlit_app.py)\n사용자 상호작용] <--> B[FastAPI Server\n(api/server.py)\n가게 프로필 및 목록 조회]
     end
 
-    %% --- AI 컨설팅 엔진 ---
     subgraph AI_컨설팅_엔진
         C[Orchestrator\n(orchestrator.py)\nAgentExecutor (LangChain)]
         D{Tool Routing\nLLM 의도 분석 및 도구 선택}
@@ -108,7 +106,6 @@ graph TD
         LLM_Final[LLM (Final Report Generation)\n최종 보고서 생성]
     end
 
-    %% --- 연결 관계 ---
     A -->|자연어 질문 입력| C
     C -->|의도 분석| D
     D -->|적합한 도구 선택| T1
@@ -128,7 +125,6 @@ graph TD
     C -->|최종 보고서 생성 요청| LLM_Final
     LLM_Final -->|최종 결과 전달| A
 
-    %% --- 스타일 ---
     style A fill:#4CAF50,color:#fff,stroke:#388E3C,stroke-width:2px
     style B fill:#FF9800,color:#fff,stroke:#EF6C00,stroke-width:2px
     style C fill:#E91E63,color:#fff,stroke:#C2185B,stroke-width:2px
@@ -145,12 +141,10 @@ LLM 기반 **하이브리드 5단계 파이프라인**을 통해,
 가게 맞춤형 축제를 추천합니다.
 ```mermaid
 graph TD
-    %% --- Orchestrator 요청 ---
     subgraph Orchestrator_요청
         Agent[AgentExecutor] -->|축제 추천 요청| Tool_Rec[Tool: recommend_festivals]
     end
 
-    %% --- Filtering Pipeline ---
     subgraph Filtering_Pipeline_(modules/filtering.py)
         Tool_Rec --> Step1[1️⃣ LLM 쿼리 재작성]
         Step1 --> Step2[2️⃣ FAISS 검색 수행]
@@ -162,12 +156,10 @@ graph TD
         Step4 --> Step5[5️⃣ 결과 포맷팅\nTop3 + 2026 예측 포함]
     end
 
-    %% --- 결과 반환 ---
     subgraph 결과_반환
         Step5 -->|추천 결과| Agent
     end
 
-    %% --- 스타일 ---
     style Agent fill:#E91E63,color:#fff
     style Tool_Rec fill:#03A9F4,color:#fff
     style Step1,Step2,Step3,Step4,Step5 fill:#81D4FA,color:#000
@@ -185,7 +177,6 @@ graph TD
 
 ```mermaid
 graph TD
-    %% --- Orchestrator 요청 ---
     subgraph Orchestrator_요청
         Agent[AgentExecutor] -->|마케팅 전략 요청| Tool_RAG[Tool: search_contextual_marketing_strategy]
     end
@@ -200,12 +191,10 @@ graph TD
         Step3 --> LLM2[LLM - Answer Synthesis]
     end
 
-    %% --- 결과 반환 ---
     subgraph 결과_반환
         Step3 -->|마케팅 전략 텍스트| Agent
     end
 
-    %% --- 스타일 ---
     style Agent fill:#E91E63,color:#fff
     style Tool_RAG fill:#03A9F4,color:#fff
     style Step1,Step2,Step3 fill:#81D4FA,color:#000
@@ -223,22 +212,18 @@ LLM이 **SWOT 분석 / 주요 특징 요약**을 수행합니다.
 
 ```mermaid
 graph TD
-    %% --- Orchestrator 요청 ---
     subgraph Orchestrator_요청
         Agent[AgentExecutor] -->|가게/축제 분석 요청| Tool_Analyze[Tool: analyze_merchant_profile / analyze_festival_profile]
     end
 
-    %% --- LLM 분석 ---
     subgraph LLM_분석_(tools/profile_analyzer.py)
         Tool_Analyze --> LLM_Analyze[LLM - SWOT / 요약 분석]
     end
 
-    %% --- 결과 반환 ---
     subgraph 결과_반환
         LLM_Analyze -->|분석 보고서| Agent
     end
 
-    %% --- 스타일 ---
     style Agent fill:#E91E63,color:#fff
     style Tool_Analyze fill:#03A9F4,color:#fff
     style LLM_Analyze fill:#BA68C8,color:#fff
