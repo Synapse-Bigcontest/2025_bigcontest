@@ -95,7 +95,7 @@ graph TD
     %% AI 컨설팅 엔진 (수정)
     %% ========================
     subgraph SG_Engine ["🧠 AI 컨설팅 엔진"]
-        direction TD %% <-- 엔진 내부 흐름을 '위->아래'로 강제
+        direction TD
         
         C["🤖 Orchestrator (핵심 에이전트)\n(orchestrator.py)\nAgentExecutor (LangChain)"]
         D{"🚦 Tool Routing\nLLM 의도 분석 & 도구 선택"}
