@@ -65,6 +65,7 @@ MarketSync/
 └── vectorstore/            # FAISS 벡터 데이터베이스 저장 폴더
     ├── faiss_festival      # 축제 정보 벡터 DB 
     └── faiss_marketing     # 마케팅 전략 벡터 DB
+```
 
 ------------------------------------------------------------------------
 
