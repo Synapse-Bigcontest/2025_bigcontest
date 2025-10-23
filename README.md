@@ -104,10 +104,11 @@ graph LR
     end
 
     %% ========================
-    %% 3. (우측) 도구 목록
+    %% 3. (우측) 도구 목록 (세로 정렬 강제)
     %% ========================
     subgraph SG_Tools ["🔧 등록된 도구 목록 (tools/)"]
-        direction TB
+        %% 'direction TB'가 렌더러에서 무시되는 문제를 해결하기 위해
+        %% 보이지 않는 링크로 수동 정렬합니다.
         T1["recommend_festivals\n(축제 추천)"]
         T2["search_contextual_marketing_strategy\n(RAG 마케팅 전략)"]
         T3["create_festival_specific_marketing_strategy\n(단일 축제 전략)"]
@@ -115,6 +116,9 @@ graph LR
         T4["analyze_merchant_profile\n(가게 분석)"]
         T5["analyze_festival_profile\n(축제 분석)"]
         T6["get_festival_profile_by_name\n(축제 프로필 조회)"]
+        
+        %% ★★★ 핵심 수정: 보이지 않는 링크(~)로 세로 정렬 강제 ★★★
+        T1 ~~~ T2 ~~~ T3 ~~~ T3_multi ~~~ T4 ~~~ T5 ~~~ T6
     end
 
     %% ========================
