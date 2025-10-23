@@ -460,10 +460,10 @@ uv run streamlit run streamlit_app.py
 
 | 사용자 입력                         | 주요 실행 도구                                            | 예상 결과                               |
 | :---------------------------------- | :------------------------------------------------------ | :-------------------------------------- |
-| "우리 가게 분석해줘"                | `analyze_merchant_profile`                              | 가게 SWOT 분석 및 핵심 고객 리포트      |
+| "현재 우리 가게를 더 자세히 분석해줘" | `analyze_merchant_profile`                              | 가게 SWOT 분석 및 핵심 고객 리포트      |
 | "주말 방문객 늘릴 만한 축제 추천해줘" | `recommend_festivals`                                   | Top 3 맞춤 축제 추천 리스트             |
-| "`서울디저트페어` 마케팅 전략 알려줘" | `create_festival_specific_marketing_strategy`           | 해당 축제 맞춤형 마케팅 전략 제안       |
-| "추천된 축제들 마케팅 방법 알려줘"    | `create_marketing_strategies_for_multiple_festivals`    | 여러 축제에 대한 통합 마케팅 전략 제안  |
-| "요즘 뜨는 홍보 방법 알려줘"        | `search_contextual_marketing_strategy` (RAG)            | 가게 특성 기반 최신 마케팅 트렌드/팁 |
+| "`서울디저트페어`를 위한 홍보 전략 알려줘" | `create_festival_specific_marketing_strategy`           | 해당 축제 맞춤형 마케팅 전략 제안       |
+| "추천된 축제들에 대한 마케팅 방법 알려줘"    | `create_marketing_strategies_for_multiple_festivals`    | 여러 축제에 대한 통합 마케팅 전략 제안  |
+| "요즘 뜨는 홍보 방법 알려줘", "20대 고객을 늘리고 싶어" | `search_contextual_marketing_strategy` (RAG)            | 가게 특성 기반 최신 마케팅 트렌드/팁 |
 
 ---
