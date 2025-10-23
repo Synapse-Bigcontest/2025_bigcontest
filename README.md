@@ -20,7 +20,7 @@ AI 에이전트가 사용하는 주요 도구와 내부 처리 과정은 다음�
 
 | 기능 분류        | 도구 함수명 (`tools/`)                                   | 주요 처리 과정 (`modules/`)                                                                                                                                                             |
 | :--------------- | :------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **축제 추천** | `recommend_festivals` (festival\_recommender.py)         | **하이브리드 5단계 파이프라인 (`filtering.py`)**: <br> 1. LLM 쿼리 재작성 <br> 2. FAISS 벡터 검색 (유사 축제 후보 선정) <br> 3. LLM 동적 속성 평가 (가게 맞춤성) <br> 4. 하이브리드 점수 계산 <br> 5. 최종 Top3 결과 포맷팅 (2026 예측 포함) |
+| **축제 추천** | `recommend_festivals` (festival\_recommender.py)         | **하이브리드 5단계 파이프라인 (`filtering.py`)**: <br> 1. LLM 쿼리 재작성 <br> 2. FAISS 벡터 검색 (유사 축제 후보 선정) <br> 3. LLM 동적 속성 평가 (가게 맞춤성) <br> 4. 하이브리드 점수 계산 <br> 5. 최종 Top3 결과 포맷팅 |
 | **마케팅 (RAG)** | `search_contextual_marketing_strategy` (marketing\_strategy.py) | **컨텍스트 기반 RAG (`knowledge_base.py`)**: <br> 1. 가게 프로필 + 질문 → LLM 검색 쿼리 생성 <br> 2. FAISS 벡터 검색 (관련 전략 문서 추출) <br> 3. LLM 답변 생성 (추출된 내용을 바탕으로 자연스러운 전략 제안)       |
 | **마케팅 (생성)** | `create_festival_specific_marketing_strategy` (marketing\_strategy.py) | **LLM 기반 전략 생성**: <br> 1. 축제 프로필 조회 (`profile_analyzer.py`) <br> 2. 가게 프로필 + 축제 프로필 + RAG 검색 → LLM 프롬프트 구성 <br> 3. LLM이 특정 축제 맞춤 전략 생성                           |
 | **마케팅 (생성)** | `create_marketing_strategies_for_multiple_festivals` (marketing\_strategy.py) | **LLM 기반 전략 생성 (다수)**: <br> 1. 여러 축제 이름 입력받음 <br> 2. 각 축제별로 `create_festival_specific_marketing_strategy` 반복 호출 <br> 3. 모든 전략을 하나의 보고서로 취합                     |
@@ -460,10 +460,10 @@ uv run streamlit run streamlit_app.py
 
 | 사용자 입력                         | 주요 실행 도구                                            | 예상 결과                               |
 | :---------------------------------- | :------------------------------------------------------ | :-------------------------------------- |
-| "우리 가게 분석해줘"                | `analyze_merchant_profile`                              | 가게 SWOT 분석 및 핵심 고객 리포트      |
+| "현재 우리 가게를 더 자세히 분석해줘" | `analyze_merchant_profile`                              | 가게 SWOT 분석 및 핵심 고객 리포트      |
 | "주말 방문객 늘릴 만한 축제 추천해줘" | `recommend_festivals`                                   | Top 3 맞춤 축제 추천 리스트             |
-| "`서울디저트페어` 마케팅 전략 알려줘" | `create_festival_specific_marketing_strategy`           | 해당 축제 맞춤형 마케팅 전략 제안       |
-| "추천된 축제들 마케팅 방법 알려줘"    | `create_marketing_strategies_for_multiple_festivals`    | 여러 축제에 대한 통합 마케팅 전략 제안  |
-| "요즘 뜨는 홍보 방법 알려줘"        | `search_contextual_marketing_strategy` (RAG)            | 가게 특성 기반 최신 마케팅 트렌드/팁 |
+| - "`서울디저트페어`를 위한 홍보 전략 알려줘" - "`금산인삼축제`에서 어떤 프로모션을 하면 효과적일까?" | `create_festival_specific_marketing_strategy`           | 해당 축제 맞춤형 마케팅 전략 제안       |
+| - "추천된 축제들에 대한 마케팅 방법 알려줘" - "방금 추천해준 축제들에서 어떤 홍보 방법을 써야 할까?"  | `create_marketing_strategies_for_multiple_festivals`    | 여러 축제에 대한 통합 마케팅 전략 제안  |
+| - "요즘 뜨는 홍보 방법 알려줘" - "20대 고객을 늘리고 싶어" | `search_contextual_marketing_strategy` (RAG)            | 가게 특성 기반 최신 마케팅 트렌드/팁 |
 
 ---
