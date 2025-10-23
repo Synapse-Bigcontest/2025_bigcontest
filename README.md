@@ -179,7 +179,6 @@ graph TD
         Tool_RAG --> Step1["1️⃣ LLM 검색 쿼리 생성<br>(가게 프로필 + 질문 기반)"]
         Step1 --> Step2["2️⃣ FAISS 벡터 검색<br>(마케팅 전략 DB 탐색<br>using Embedding Model)"]
         Step2 --> VSM["📂 FAISS (마케팅 DB)"]
-        // EM node removed
         Step2 --> Step3["3️⃣ LLM 답변 생성<br>(검색된 컨텍스트 기반)"]
         Step3 --> LLM2["🤖 LLM (Answer Synthesis)"]
     end
