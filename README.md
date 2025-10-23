@@ -82,59 +82,69 @@ MarketSync/
 사용자가 UI를 통해 질문하면, **에이전트(Orchestrator)** 가 작동하고, 필요 시 FastAPI 서버나 **여러 도구(Tool)** 와 상호작용합니다.
 
 ```mermaid
-    %% --- 사용자 & 서버 ---
-    subgraph "사용자 인터페이스 & 데이터 서버"
-        A["🖥️ Streamlit UI<br>(streamlit_app.py)"] <--> B["🚀 FastAPI Server<br>(api/server.py)<br>📊 가게 프로필 / 목록 조회"]
+graph TD
+    %% ========================
+    %% 사용자 인터페이스 & 데이터 서버
+    %% ========================
+    subgraph 사용자_인터페이스_및_API_서버
+        direction LR
+        A[Streamlit UI\n(streamlit_app.py)\n사용자 상호작용] <--> B[FastAPI Server\n(api/server.py)\n가게 프로필 및 목록 조회]
     end
 
-    %% --- AI 컨설팅 엔진 ---
-    subgraph "🧠 AI 컨설팅 엔진"
-        C["🤖 Orchestrator<br>(orchestrator.py)<br>AgentExecutor (LangChain)"]
-        D{"🎯 Tool Routing<br>LLM 의도 분석"}
+    %% ========================
+    %% AI 컨설팅 엔진
+    %% ========================
+    subgraph AI_컨설팅_엔진
+        C[Orchestrator\n(orchestrator.py)\nAgentExecutor (LangChain)]
+        D{Tool Routing\nLLM 의도 분석}
 
-        %% 도구 목록을 세로로 배치
-        subgraph "🧩 등록된 도구 목록 (tools/)"
+        subgraph 등록된_도구_목록_(tools)
             direction TB
-            T1["✨ recommend_festivals<br>축제 추천"]
-            T2["📚 search_contextual_marketing_strategy<br>RAG 마케팅 전략"]
-            T3["🧾 create_festival_specific_marketing_strategy<br>축제별 마케팅 전략"]
-            T4["📊 analyze_merchant_profile<br>가게 분석"]
-            T5["🏮 analyze_festival_profile<br>축제 분석"]
-            T6["📖 get_festival_profile_by_name<br>축제 프로필 조회"]
+            T1[recommend_festivals\n(축제 추천)]
+            T2[search_contextual_marketing_strategy\n(RAG 마케팅 전략)]
+            T3[create_festival_specific_marketing_strategy\n(축제별 마케팅 전략)]
+            T4[analyze_merchant_profile\n(가게 분석)]
+            T5[analyze_festival_profile\n(축제 분석)]
+            T6[get_festival_profile_by_name\n(축제 프로필 조회)]
         end
 
-        LLM_Final["🪄 LLM (Final Report Generation)<br>최종 보고서 생성"]
+        LLM_Final[LLM (Final Report Generation)\n최종 보고서 생성]
     end
 
-    %% --- 흐름 ---
-    A -- "자연어 질문 입력" --> C
-    C -- "의도 분석" --> D
-    D -- "적합한 도구 선택" --> T1
-    D -- "적합한 도구 선택" --> T2
-    D -- "적합한 도구 선택" --> T3
-    D -- "적합한 도구 선택" --> T4
-    D -- "적합한 도구 선택" --> T5
-    D -- "적합한 도구 선택" --> T6
-
-    %% 도구 결과 → Orchestrator
+    %% ========================
+    %% 연결 관계
+    %% ========================
+    A -->|자연어 질문 입력| C
+    C -->|의도 분석| D
+    D -->|적합한 도구 선택| T1
+    D -->|적합한 도구 선택| T2
+    D -->|적합한 도구 선택| T3
+    D -->|적합한 도구 선택| T4
+    D -->|적합한 도구 선택| T5
+    D -->|적합한 도구 선택| T6
     T1 --> C
     T2 --> C
     T3 --> C
     T4 --> C
     T5 --> C
     T6 --> C
+    C -->|최종 보고서 생성 요청| LLM_Final
+    LLM_Final -->|최종 결과 전달| A
 
-    %% LLM 최종 결과
-    C -- "최종 보고서 생성 요청" --> LLM_Final
-    LLM_Final -- "최종 결과 전달" --> A
-
-    %% --- 스타일 ---
-    style A fill:#4CAF50,color:#fff
-    style B fill:#FF9800,color:#fff
-    style C fill:#E91E63,color:#fff
-    style D fill:#9C27B0,color:#fff
-    style T1,T2,T3,T4,T5,T6 fill:#03A9F4,color:#fff
-    style LLM_Final fill:#BA68C8,color:#fff
+    %% ========================
+    %% 스타일 지정 (GitHub 호환)
+    %% ========================
+    style A fill:#4CAF50,color:#fff,stroke:#388E3C,stroke-width:2px
+    style B fill:#FF9800,color:#fff,stroke:#EF6C00,stroke-width:2px
+    style C fill:#E91E63,color:#fff,stroke:#C2185B,stroke-width:2px
+    style D fill:#9C27B0,color:#fff,stroke:#7B1FA2,stroke-width:2px
+    style T1 fill:#03A9F4,color:#fff,stroke:#0288D1,stroke-width:2px
+    style T2 fill:#03A9F4,color:#fff,stroke:#0288D1,stroke-width:2px
+    style T3 fill:#03A9F4,color:#fff,stroke:#0288D1,stroke-width:2px
+    style T4 fill:#03A9F4,color:#fff,stroke:#0288D1,stroke-width:2px
+    style T5 fill:#03A9F4,color:#fff,stroke:#0288D1,stroke-width:2px
+    style T6 fill:#03A9F4,color:#fff,stroke:#0288D1,stroke-width:2px
+    style LLM_Final fill:#BA68C8,color:#fff,stroke:#8E24AA,stroke-width:2px
 ```
 
 ---
