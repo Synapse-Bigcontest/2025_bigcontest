@@ -142,62 +142,35 @@ LLM 기반 **하이브리드 5단계 파이프라인**을 통해,
 가게 맞춤형 축제를 추천합니다.
 ```mermaid
 graph TD
-    %% ========================
-    %% 사용자 인터페이스 & 데이터 서버
-    %% ========================
-    subgraph SG_UserServer ["💻 사용자 인터페이스 & 데이터 서버"]
-        direction LR
-        A["🖥️ Streamlit UI\n(streamlit_app.py)\n사용자 상호작용"] <--> B["🚀 FastAPI Server\n(api/server.py)\n📊 가게 프로필 / 목록 조회"]
+    %% --- Orchestrator 요청 ---
+    subgraph Orchestrator_요청
+        Agent[AgentExecutor] -->|축제 추천 요청| Tool_Rec[Tool: recommend_festivals]
     end
 
-    %% ========================
-    %% AI 컨설팅 엔진
-    %% ========================
-    subgraph SG_Engine ["🧠 AI 컨설팅 엔진"]
-        C["🤖 Orchestrator (핵심 에이전트)\n(orchestrator.py)\nAgentExecutor (LangChain)"]
-        D{"🚦 Tool Routing\nLLM 의도 분석 & 도구 선택"}
-
-        subgraph SG_Tools ["🔧 등록된 도구 목록 (tools/)"]
-            T1["recommend_festivals\n(축제 추천)"]
-            T6["get_festival_profile_by_name\n(축제 프로필 조회)"]
-            T5["analyze_festival_profile\n(축제 분석)"]
-            T2["search_contextual_marketing_strategy\n(RAG 마케팅 전략)"]
-            T3["create_festival_specific_marketing_strategy\n(단일 축제 전략)"]
-            T3_multi["create_marketing_strategies_for_multiple_festivals\n(다수 축제 전략)"]
-            T4["analyze_merchant_profile\n(가게 분석)"]
-        end
-
-        LLM_Final["🪄 LLM (Final Report Generation)\n최종 보고서 생성"]
+    %% --- Filtering Pipeline ---
+    subgraph Filtering_Pipeline_(modules/filtering.py)
+        Tool_Rec --> Step1[1️⃣ LLM 쿼리 재작성]
+        Step1 --> Step2[2️⃣ FAISS 검색 수행]
+        Step2 --> EMB[Embedding Model\n(BGE-m3-ko)]
+        EMB --> VSF[FAISS Vector DB\n(축제 데이터)]
+        Step2 --> Step3[3️⃣ LLM 동적 평가\n가게 맞춤성 판단]
+        Step3 --> LLM1[LLM - Dynamic Evaluation]
+        Step3 --> Step4[4️⃣ 하이브리드 점수 계산\n유사도 + 맞춤성]
+        Step4 --> Step5[5️⃣ 결과 포맷팅\nTop3 + 2026 예측 포함]
     end
 
-    %% ========================
-    %% 연결 관계 (수정됨)
-    %% - C(Orchestrator)가 모든 흐름을 제어하고
-    %% - 최종 결과를 A(UI)로 전달하도록 수정
-    %% ========================
-    
-    %% UI와 API 서버는 상호작용 (데이터 로딩 등)
-    A <--> B
+    %% --- 결과 반환 ---
+    subgraph 결과_반환
+        Step5 -->|추천 결과| Agent
+    end
 
-    %% 메인 에이전트 흐름
-    A -- "1. 자연어 질문 입력" --> C
-    C -- "2. 의도 분석 요청" --> D
-    D -- "3. 적합 도구 선택/실행" --> SG_Tools  
-    SG_Tools -- "4. 도구 실행 결과 반환" --> C       
-    C -- "5. 최종 보고서 생성 요청" --> LLM_Final
-    LLM_Final -- "6. 최종 보고서 반환" --> C
-    C -- "7. 최종 결과 전달" --> A
-
-    %% ========================
-    %% 스타일 지정 (GitHub 호환)
-    %% ========================
-    style A fill:#4CAF50,color:#fff,stroke:#388E3C,stroke-width:2px
-    style B fill:#FF9800,color:#fff,stroke:#EF6C00,stroke-width:2px
-    style C fill:#E91E63,color:#fff,stroke:#C2185B,stroke-width:2px
-    style D fill:#9C27B0,color:#fff,stroke:#7B1FA2,stroke-width:2px,shape:diamond
-    style SG_Tools fill:#E1F5FE, stroke:#0277BD,color:#000
-    style T1,T2,T3,T3_multi,T4,T5,T6 fill:#03A9F4,color:#fff,stroke:#0288D1,stroke-width:2px,shape:hexagon
-    style LLM_Final fill:#BA68C8,color:#fff,stroke:#8E24AA,stroke-width:2px
+    %% --- 스타일 ---
+    style Agent fill:#E91E63,color:#fff
+    style Tool_Rec fill:#03A9F4,color:#fff
+    style Step1,Step2,Step3,Step4,Step5 fill:#81D4FA,color:#000
+    style EMB fill:#4DD0E1,color:#000
+    style VSF fill:#FFC107,color:#000
+    style LLM1 fill:#BA68C8,color:#fff
 ```
 
 ---
