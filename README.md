@@ -130,7 +130,7 @@ graph TD
     style C fill:#E91E63,color:#fff,stroke:#C2185B,stroke-width:2px
     style D fill:#9C27B0,color:#fff,stroke:#7B1FA2,stroke-width:2px,shape:diamond
     style SG_Tools fill:#E1F5FE, stroke:#0277BD,color:#000
-    style T1,T2,T3,T3_multi,T4,T5,T6 fill:#03A9F4,color:#fff,stroke:#0288D1,stroke-width:2px,shape:hexagon %% T3_multi 추가
+    style T1,T2,T3,T3_multi,T4,T5,T6 fill:#03A9F4,color:#fff,stroke:#0288D1,stroke-width:2px,shape:hexagon
     style LLM_Final fill:#BA68C8,color:#fff,stroke:#8E24AA,stroke-width:2px
 ```
 
@@ -156,7 +156,7 @@ graph TD
         Tool_Rec --> Step1["1️⃣ LLM 쿼리 재작성"]
         Step1 --> Step2["2️⃣ FAISS 벡터 검색\n(유사 축제 후보 탐색)"]
         Step2 --> VSF["📂 FAISS (축제 DB)"]
-        Step2 --> EM["🧬 Embedding Model\n(knowledge_base.py)"] %% 임베딩 모델 노드 추가
+        Step2 --> EM["🧬 Embedding Model\n(knowledge_base.py)"]
         Step2 --> Step3["3️⃣ LLM 동적 속성 평가\n(가게 맞춤성 판단)"]
         Step3 --> LLM1["🤖 LLM (Dynamic Evaluation)"]
         Step3 --> Step4["4️⃣ 하이브리드 점수 계산\n(유사도 + 맞춤성)"]
@@ -177,7 +177,7 @@ graph TD
     style Tool_Rec fill:#03A9F4,color:#fff
     style Step1,Step2,Step3,Step4,Step5 fill:#81D4FA,color:#000
     style VSF fill:#FFC107,color:#000
-    style EM fill:#4DD0E1,color:#000 %% 임베딩 모델 스타일
+    style EM fill:#4DD0E1,color:#000 
     style LLM1 fill:#BA68C8,color:#fff
 ```
 
@@ -204,7 +204,7 @@ graph TD
         Tool_RAG --> Step1["1️⃣ LLM 검색 쿼리 생성\n(가게 프로필 + 질문 기반)"]
         Step1 --> Step2["2️⃣ FAISS 벡터 검색\n(마케팅 DB 탐색)"]
         Step2 --> VSM["📂 FAISS (마케팅 DB)"]
-        Step2 --> EM["🧬 Embedding Model\n(knowledge_base.py)"] %% 임베딩 모델 노드 추가
+        Step2 --> EM["🧬 Embedding Model\n(knowledge_base.py)"] 
         Step2 --> Step3["3️⃣ LLM 답변 생성\n(검색된 컨텍스트 기반)"]
         Step3 --> LLM2["🤖 LLM (Answer Synthesis)"]
     end
@@ -223,7 +223,7 @@ graph TD
     style Tool_RAG fill:#03A9F4,color:#fff
     style Step1,Step2,Step3 fill:#81D4FA,color:#000
     style VSM fill:#FFC107,color:#000
-    style EM fill:#4DD0E1,color:#000 %% 임베딩 모델 스타일
+    style EM fill:#4DD0E1,color:#000 
     style LLM2 fill:#BA68C8,color:#fff
 ```
 
