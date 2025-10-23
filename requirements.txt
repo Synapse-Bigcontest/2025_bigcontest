@@ -21,13 +21,9 @@ langchain-community>=0.2.0 # FAISS, PyPDFLoader 등 RAG 핵심 모듈 포함
 # --- RAG 및 벡터스토어 ---
 faiss-cpu>=1.8.0      # FAISS 벡터스토어 엔진
 pypdf>=4.2.0         # PDF 문서 로더
-sentence-transformers 
-torch
 
 # --- 이미지 처리 ---
 Pillow>=10.0.0
 
 # --- 기타 ---
-fastapi>=0.111.0
-uvicorn>=0.26.0
 matplotlib>=3.7.2
