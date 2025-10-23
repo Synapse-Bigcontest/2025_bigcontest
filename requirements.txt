@@ -21,6 +21,6 @@ faiss-cpu>=1.7.4
 pypdf>=4.2.0
 
 # --- 5단계: MCP 및 커스텀 도구 관련 ---
-mcp>=1.13.1
-fastmcp>=2.11.0
+mcp>=1.12.0,<1.14.0
+fastmcp>=2.10.0,<2.12.0
 langchain-mcp-adapters>=0.1.0
