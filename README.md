@@ -95,7 +95,7 @@ graph TD
         D{"🎯 Tool Routing<br>LLM 의도 분석"}
 
         subgraph SG_Tools ["🧩 등록된 도구 목록 (tools/)"]
-            direction TD  // 도구를 세로로 배열
+            direction TD 
             T1["✨ recommend_festivals"]
             T6["📖 get_festival_profile_by_name"]
             T5["🏮 analyze_festival_profile"]
@@ -192,7 +192,6 @@ graph TD
     style Tool_RAG fill:#03A9F4,color:#fff
     style Step1,Step2,Step3 fill:#81D4FA,color:#000
     style VSM fill:#FFC107,color:#000
-    // EM style removed
     style LLM2 fill:#BA68C8,color:#fff
 ```
 
