@@ -92,18 +92,19 @@ MarketSync/
 
 ```mermaid
 graph TD
+
     %% --- 사용자 & 서버 ---
-    subgraph SG_UserServer ["<font size=5>💻 사용자 인터페이스 & 데이터 서버</font>"]
+    subgraph SG_UserServer ["💻 사용자 인터페이스 & 데이터 서버"]
         direction LR
-        A["<font size=4>🖥️ Streamlit UI</font><br>(streamlit_app.py)<br>사용자 상호작용"] <--> B["<font size=4>🚀 FastAPI Server</font><br>(api/server.py)<br>📊 가게 프로필 / 목록 조회"]
+        A["🖥️ Streamlit UI\n(streamlit_app.py)\n사용자 상호작용"] <--> B["🚀 FastAPI Server\n(api/server.py)\n📊 가게 프로필 / 목록 조회"]
     end
 
     %% --- AI 컨설팅 엔진 ---
-    subgraph SG_Engine ["<font size=5>🧠 AI 컨설팅 엔진</font>"]
-        C["<font size=4>🤖 Orchestrator (핵심 에이전트)</font><br>(orchestrator.py)<br>AgentExecutor (LangChain)"]
-        D{"<font size=4>🚦 Tool Routing</font><br>LLM 의도 분석 & 도구 선택"}
+    subgraph SG_Engine ["🧠 AI 컨설팅 엔진"]
+        C["🤖 Orchestrator (핵심 에이전트)\n(orchestrator.py)\nAgentExecutor (LangChain)"]
+        D{"🚦 Tool Routing\nLLM 의도 분석 & 도구 선택"}
 
-        subgraph SG_Tools ["<font size=4>🔧 등록된 도구 목록 (tools/)</font>"]
+        subgraph SG_Tools ["🔧 등록된 도구 목록 (tools/)"]
             direction TD
             T1["✨ recommend_festivals"]
             T2["📚 search_contextual_marketing_strategy"]
@@ -116,11 +117,11 @@ graph TD
     end
 
     %% --- Connections ---
-    A -- <font size=3>자연어 질문 입력</font> --> C
-    C -- <font size=3>의도 분석 요청</font> --> D
-    D -- <font size=3>적합 도구 선택/실행</font> --> SG_Tools
-    SG_Tools -- <font size=3>도구 실행 결과</font> --> C
-    C -- <font size=3>최종 보고서 생성/전달</font> --> A
+    A -- "자연어 질문 입력" --> C
+    C -- "의도 분석 요청" --> D
+    D -- "적합 도구 선택/실행" --> SG_Tools
+    SG_Tools -- "도구 실행 결과" --> C
+    C -- "최종 보고서 생성/전달" --> A
 
     %% --- Styles ---
     style A fill:#4CAF50,color:#fff,stroke:#388E3C,stroke-width:2px
