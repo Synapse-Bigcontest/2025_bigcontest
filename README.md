@@ -83,6 +83,7 @@ MarketSync/
 
 ```mermaid
 graph TD
+
     %% --- 사용자 & 서버 ---
     subgraph SG_UserServer ["사용자 인터페이스 & 데이터 서버"]
         A["🖥️ Streamlit UI<br>(streamlit_app.py)"] <--> B["🚀 FastAPI Server<br>(api/server.py)<br>📊 가게 프로필 / 목록 조회"]
@@ -95,13 +96,13 @@ graph TD
 
         subgraph SG_Tools ["🧩 등록된 도구 목록 (tools/)"]
             direction TD  // 도구를 세로로 배열
-            T1["✨ recommend_festivals<br>(축제 추천)"]
-            T6["📖 get_festival_profile_by_name<br>(축제 프로필 조회)"]
-            T5["🏮 analyze_festival_profile<br>(축제 분석)"]
-            T2["📚 search_contextual_marketing_strategy<br>(RAG 마케팅 전략)"]
-            T3["🧾 create_festival_specific_marketing_strategy<br>(축제별 마케팅 전략)"]
-             T3_multi["🧾 create_marketing_strategies_for_multiple_festivals<br>(다수 축제 전략 - T3 호출)"] // tool_loader에 있는 다수 전략 도구 추가
-            T4["📊 analyze_merchant_profile<br>(가게 분석)"]
+            T1["✨ recommend_festivals"]
+            T6["📖 get_festival_profile_by_name"]
+            T5["🏮 analyze_festival_profile"]
+            T2["📚 search_contextual_marketing_strategy"]
+            T3["🧾 create_festival_specific_marketing_strategy"]
+            T3_multi["🧾 create_marketing_strategies_for_multiple_festivals"]
+            T4["📊 analyze_merchant_profile"]
         end
 
         LLM_Final["🪄 LLM (Final Report Generation)<br>최종 보고서 생성"]
@@ -110,8 +111,8 @@ graph TD
     %% --- Connections ---
     A -- "자연어 질문 입력" --> C
     C -- "의도 분석" --> D
-    D -- "적합한 도구 선택" --> SG_Tools  // 라우터가 도구 그룹 선택
-    SG_Tools -- "도구 실행 결과" --> C   // 도구 결과가 Orchestrator로
+    D -- "적합한 도구 선택" --> SG_Tools
+    SG_Tools -- "도구 실행 결과" --> C
 
     C -- "최종 보고서 생성 요청" --> LLM_Final
     LLM_Final -- "결과 전달" --> A
@@ -121,7 +122,7 @@ graph TD
     style B fill:#FF9800,color:#fff
     style C fill:#E91E63,color:#fff
     style D fill:#9C27B0,color:#fff
-    style T1,T2,T3, T3_multi, T4,T5,T6 fill:#03A9F4,color:#fff // 모든 도구 스타일 적용
+    style T1,T2,T3, T3_multi, T4,T5,T6 fill:#03A9F4,color:#fff
     style LLM_Final fill:#BA68C8,color:#fff
 ```
 
