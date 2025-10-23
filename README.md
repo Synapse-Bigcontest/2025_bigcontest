@@ -116,6 +116,7 @@ graph LR
         T4["analyze_merchant_profile\n(가게 분석)"]
         T5["analyze_festival_profile\n(축제 분석)"]
         T6["get_festival_profile_by_name\n(축제 프로필 조회)"]
+        
     end
 
     %% ========================
