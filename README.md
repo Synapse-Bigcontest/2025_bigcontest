@@ -121,6 +121,8 @@ graph TD
     style LLM_Final fill:#BA68C8,color:#fff
 ```
 
+---
+
 ### (2) 축제 추천 도구 상세 — recommend_festivals
 
 LLM 기반 **하이브리드 5단계 파이프라인**을 통해,
@@ -156,6 +158,8 @@ graph TD
     style LLM1 fill:#BA68C8,color:#fff
 ```
 
+---
+
 ### (3) 마케팅 전략 (RAG) 도구 상세 — search_contextual_marketing_strategy
 
 **RAG** 기반으로 **가게 프로필 + 질문 컨텍스트**를 이용해
@@ -190,6 +194,8 @@ graph TD
     style LLM2 fill:#BA68C8,color:#fff
 ```
 
+---
+
 ### (4) LLM 기반 분석 도구 상세 — analyze_merchant_profile / analyze_festival_profile
 
 가게 또는 축제의 프로필(JSON)을 입력받아
@@ -216,7 +222,7 @@ graph TD
     style LLM_Analyze fill:#BA68C8,color:#fff
 ```
 
----
+------------------------------------------------------------------------
 
 ## 📍 데이터 흐름 상세
 
