@@ -1,4 +1,4 @@
-# --- 1단계: 핵심 패키지 및 기본 유틸 ---
+# --- 1단계: 핵심 패키지 ---
 streamlit>=1.38.0
 pandas>=2.2.0
 numpy==1.26.4
@@ -6,23 +6,21 @@ Pillow>=10.0.0
 matplotlib>=3.7.2
 
 # --- 2단계: LangChain 및 커뮤니티 ---
-# langchain-community는 langchain-core보다 먼저 설치되어야 합니다.
+# community 모듈을 GitHub에서 직접 설치
 git+https://github.com/langchain-ai/langchain.git@master#subdirectory=libs/community
 langchain-core>=0.2.0
 langchain>=0.2.0
-langchain-core>=0.2.0
-langchain>=0.2.0
 
-# --- 3단계: LangChain 관련 확장 모듈 ---
+# --- 3단계: LangChain 확장 모듈 ---
 langchain-google-genai>=1.0.0
 langgraph>=0.1.0
 google-generativeai>=0.8.0
 
-# --- 4단계: Vector Store & AI 모델 활용 ---
+# --- 4단계: 벡터 저장소 & AI 모델 ---
 faiss-cpu>=1.7.4
 pypdf>=4.2.0
 
-# --- 5단계: MCP 및 커스텀 도구 관련 ---
+# --- 5단계: MCP 및 커스텀 도구 ---
 mcp>=1.12.0,<1.14.0
 fastmcp>=2.10.0,<2.12.0
 langchain-mcp-adapters>=0.1.0
