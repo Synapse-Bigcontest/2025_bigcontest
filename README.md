@@ -117,8 +117,8 @@ graph TD
     %% ========================
     A -- "자연어 질문 입력" --> C
     C -- "의도 분석 요청" --> D
-    D -- "적합 도구 선택/실행" --> SG_Tools  %% 라우터가 도구 그룹과 연결
-    SG_Tools -- "도구 실행 결과" --> C       %% 도구 그룹 결과가 Orchestrator로
+    D -- "적합 도구 선택/실행" --> SG_Tools  
+    SG_Tools -- "도구 실행 결과" --> C       
     C -- "최종 보고서 생성 요청" --> LLM_Final
     LLM_Final -- "최종 결과 전달" --> A
 
@@ -130,7 +130,7 @@ graph TD
     style C fill:#E91E63,color:#fff,stroke:#C2185B,stroke-width:2px
     style D fill:#9C27B0,color:#fff,stroke:#7B1FA2,stroke-width:2px,shape:diamond
     style SG_Tools fill:#E1F5FE, stroke:#0277BD,color:#000
-    style T1,T2,T3,T3_multi,T4,T5,T6 fill:#03A9F4,color:#fff,stroke:#0288D1,stroke-width:2px,shape:hexagon %% T3_multi 추가
+    style T1,T2,T3,T3_multi,T4,T5,T6 fill:#03A9F4,color:#fff,stroke:#0288D1,stroke-width:2px,shape:hexagon 
     style LLM_Final fill:#BA68C8,color:#fff,stroke:#8E24AA,stroke-width:2px
 ```
 
@@ -223,7 +223,7 @@ graph TD
     style Tool_RAG fill:#03A9F4,color:#fff
     style Step1,Step2,Step3 fill:#81D4FA,color:#000
     style VSM fill:#FFC107,color:#000
-    style EM fill:#4DD0E1,color:#000 %% 임베딩 모델 스타일
+    style EM fill:#4DD0E1,color:#000 
     style LLM2 fill:#BA68C8,color:#fff
 ```
 
