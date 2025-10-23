@@ -16,7 +16,7 @@ langchain-core>=0.2.0
 langchain-google-genai>=1.0.0
 langchain-mcp-adapters>=0.1.0
 langgraph>=0.1.0
-langchain-community>=0.2.0 # FAISS, PyPDFLoader 등 RAG 핵심 모듈 포함
+langchain-community==0.2.0 # FAISS, PyPDFLoader 등 RAG 핵심 모듈 포함
 
 # --- RAG 및 벡터스토어 ---
 faiss-cpu     # FAISS 벡터스토어 엔진
