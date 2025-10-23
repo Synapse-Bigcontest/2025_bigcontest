@@ -92,9 +92,11 @@ graph TD
     end
 
     %% ========================
-    %% AI 컨설팅 엔진
+    %% AI 컨설팅 엔진 (수정)
     %% ========================
     subgraph SG_Engine ["🧠 AI 컨설팅 엔진"]
+        direction TD %% <-- 엔진 내부 흐름을 '위->아래'로 강제
+        
         C["🤖 Orchestrator (핵심 에이전트)\n(orchestrator.py)\nAgentExecutor (LangChain)"]
         D{"🚦 Tool Routing\nLLM 의도 분석 & 도구 선택"}
 
@@ -112,9 +114,7 @@ graph TD
     end
 
     %% ========================
-    %% 연결 관계 (수정됨)
-    %% - C(Orchestrator)가 모든 흐름을 제어하고
-    %% - 최종 결과를 A(UI)로 전달하도록 수정
+    %% 연결 관계
     %% ========================
     
     %% UI와 API 서버는 상호작용 (데이터 로딩 등)
