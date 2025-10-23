@@ -143,7 +143,6 @@ graph TD
         Tool_Rec --> Step1["1️⃣ LLM 쿼리 재작성"]
         Step1 --> Step2["2️⃣ FAISS 벡터 검색<br>(유사 축제 후보 추출<br>using Embedding Model)"]
         Step2 --> VSF["📂 FAISS (축제 DB)"]
-        // EM node removed
         Step2 --> Step3["3️⃣ LLM 동적 속성 평가<br>(가게 맞춤성 판단)"]
         Step3 --> LLM1["🤖 LLM (Dynamic Eval)"]
         Step3 --> Step4["4️⃣ 하이브리드 점수 계산<br>(유사도 + 맞춤성)"]
@@ -178,7 +177,7 @@ graph TD
 
     subgraph "📚 RAG Logic (modules/knowledge_base.py)"
         Tool_RAG --> Step1["1️⃣ LLM 검색 쿼리 생성<br>(가게 프로필 + 질문 기반)"]
-        Step1 --> Step2["2️⃣ FAISS 벡터 검색<br>(마케팅 전략 DB 탐색<br>using Embedding Model)"] // Embedding Model mention added here
+        Step1 --> Step2["2️⃣ FAISS 벡터 검색<br>(마케팅 전략 DB 탐색<br>using Embedding Model)"]
         Step2 --> VSM["📂 FAISS (마케팅 DB)"]
         // EM node removed
         Step2 --> Step3["3️⃣ LLM 답변 생성<br>(검색된 컨텍스트 기반)"]
