@@ -82,56 +82,64 @@ MarketSync/
 사용자가 UI를 통해 질문하면, **에이전트(Orchestrator)** 가 작동하고, 필요 시 FastAPI 서버나 **여러 도구(Tool)** 와 상호작용합니다.
 
 ```mermaid
-graph TD
+graph TB
     %% ========================
-    %% AI 컨설팅 엔진 (최상단)
+    %% AI 컨설팅 엔진
     %% ========================
     subgraph SG_Engine ["🧠 AI 컨설팅 엔진"]
         direction TB
-        C["🤖 Orchestrator (핵심 에이전트)\n(orchestrator.py)\nAgentExecutor (LangChain)"]
-        D{"🚦 Tool Routing\nLLM 의도 분석 & 도구 선택"}
 
-        subgraph SG_Tools ["🔧 등록된 도구 목록 (tools/)"]
-            T1["recommend_festivals\n(축제 추천)"]
-            T2["search_contextual_marketing_strategy\n(RAG 마케팅 전략)"]
-            T3["create_festival_specific_marketing_strategy\n(단일 축제 전략)"]
-            T3_multi["create_marketing_strategies_for_multiple_festivals\n(다수 축제 전략)"]
-            T4["analyze_merchant_profile\n(가게 분석)"]
-            T5["analyze_festival_profile\n(축제 분석)"]
-            T6["get_festival_profile_by_name\n(축제 프로필 조회)"]
+        C["🤖 Orchestrator\n(orchestrator.py)\n핵심 에이전트 (LangChain AgentExecutor)"]
+        D{"🚦 Tool Router\nLLM 의도 분석 & 도구 선택"}
+
+        subgraph SG_Tools ["🔧 도구 목록 (tools/)"]
+            direction TB
+            T1["🎯 recommend_festivals\n→ 축제 추천"]
+            T2["💡 search_contextual_marketing_strategy\n→ RAG 마케팅 전략"]
+            T3["🧩 create_festival_specific_marketing_strategy\n→ 단일 축제 전략"]
+            T3_multi["🧠 create_marketing_strategies_for_multiple_festivals\n→ 다수 축제 전략"]
+            T4["🏪 analyze_merchant_profile\n→ 가게 분석"]
+            T5["🎪 analyze_festival_profile\n→ 축제 분석"]
+            T6["📘 get_festival_profile_by_name\n→ 축제 프로필 조회"]
         end
 
         LLM_Final["🪄 LLM (Final Report Generation)\n최종 보고서 생성"]
     end
 
+
     %% ========================
-    %% 사용자 인터페이스 & 데이터 서버 (하단)
+    %% 사용자 인터페이스 & 데이터 서버
     %% ========================
     subgraph SG_UserServer ["💻 사용자 인터페이스 & 데이터 서버"]
         direction LR
-        A["🖥️ Streamlit UI\n(streamlit_app.py)\n사용자 상호작용"] <--> B["🚀 FastAPI Server\n(api/server.py)\n📊 가게 프로필 / 목록 조회"]
+        A["🖥️ Streamlit UI\n(streamlit_app.py)\n사용자 상호작용"] <--> B["🚀 FastAPI Server\n(api/server.py)\n📊 가게 프로필 / 목록 제공"]
     end
 
-    %% ========================
-    %% 연결 관계 (수정)
-    %% ========================
-    A -- "자연어 질문 입력" --> C
-    C -- "의도 분석 요청" --> D
-    D -- "적합 도구 선택/실행" --> SG_Tools
-    SG_Tools -- "도구 실행 결과" --> C
-    C -- "최종 보고서 생성 요청" --> LLM_Final
-    LLM_Final -- "최종 결과 전달" --> A
 
     %% ========================
-    %% 스타일 지정 (GitHub 호환)
+    %% 연결 관계
     %% ========================
+    A -- "자연어 질의 입력" --> C
+    C -- "의도 분석 요청" --> D
+    D -- "도구 실행 결정" --> SG_Tools
+    SG_Tools -- "도구 실행 결과" --> C
+    C -- "최종 보고서 요청" --> LLM_Final
+    LLM_Final -- "결과 반환" --> A
+
+
+    %% ========================
+    %% 스타일 (색상 일관성)
+    %% ========================
+    style SG_Engine fill:#FFF3E0,stroke:#FB8C00,stroke-width:2px,color:#000
+    style SG_Tools fill:#E3F2FD,stroke:#1E88E5,stroke-width:2px,color:#000
+    style SG_UserServer fill:#E8F5E9,stroke:#43A047,stroke-width:2px,color:#000
+
     style A fill:#4CAF50,color:#fff,stroke:#388E3C,stroke-width:2px
     style B fill:#FF9800,color:#fff,stroke:#EF6C00,stroke-width:2px
     style C fill:#E91E63,color:#fff,stroke:#C2185B,stroke-width:2px
     style D fill:#9C27B0,color:#fff,stroke:#7B1FA2,stroke-width:2px,shape:diamond
-    style SG_Tools fill:#E1F5FE, stroke:#0277BD,color:#000
-    style T1,T2,T3,T3_multi,T4,T5,T6 fill:#03A9F4,color:#fff,stroke:#0288D1,stroke-width:2px,shape:hexagon
     style LLM_Final fill:#BA68C8,color:#fff,stroke:#8E24AA,stroke-width:2px
+    style T1,T2,T3,T3_multi,T4,T5,T6 fill:#29B6F6,color:#fff,stroke:#0288D1,stroke-width:2px,shape:hexagon
 ```
 
 ---
@@ -381,6 +389,7 @@ uv pip install -r requirements.txt
 
 # 5. FastAPI 서버 실행 (api 폴더의 server.py를 모듈로 실행)
 python -m api.server
+```
 
 ### 3️⃣ Streamlit 앱 실행
 
