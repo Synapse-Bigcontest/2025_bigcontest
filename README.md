@@ -83,7 +83,6 @@ MarketSync/
 
 ```mermaid
 graph TD
-
     %% --- 사용자 & 서버 ---
     subgraph SG_UserServer ["💻 사용자 인터페이스 & 데이터 서버"]
         direction LR
@@ -97,13 +96,14 @@ graph TD
 
         subgraph SG_Tools ["🔧 등록된 도구 목록 (tools/)"]
             direction TD
-            T1["✨ recommend_festivals"]
-            T2["📚 search_contextual_marketing_strategy"]
-            T3["🧾 create_festival_specific_marketing_strategy"]
-            T3_multi["🧾 create_marketing_strategies_for_multiple_festivals"]
-            T4["📊 analyze_merchant_profile"]
-            T5["🏮 analyze_festival_profile"]
-            T6["📖 get_festival_profile_by_name"]
+            %% --- 수정: 노드 레이블에서 이모지 제거 ---
+            T1["recommend_festivals"]
+            T2["search_contextual_marketing_strategy"]
+            T3["create_festival_specific_marketing_strategy"]
+            T3_multi["create_marketing_strategies_for_multiple_festivals"]
+            T4["analyze_merchant_profile"]
+            T5["analyze_festival_profile"]
+            T6["get_festival_profile_by_name"]
         end
     end
 
