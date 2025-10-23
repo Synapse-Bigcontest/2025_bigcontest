@@ -177,7 +177,7 @@ graph TD
     style Tool_Rec fill:#03A9F4,color:#fff
     style Step1,Step2,Step3,Step4,Step5 fill:#81D4FA,color:#000
     style VSF fill:#FFC107,color:#000
-    style EM fill:#4DD0E1,color:#000 %% 임베딩 모델 스타일
+    style EM fill:#4DD0E1,color:#000
     style LLM1 fill:#BA68C8,color:#fff
 ```
 
