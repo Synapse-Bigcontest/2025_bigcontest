@@ -6,7 +6,7 @@ from typing import List, Dict, Any, Optional, Tuple
 import pandas as pd
 
 from langchain_core.messages import HumanMessage 
-from langchain_community.vectorstores.faiss import FAISS
+from langchain_community.vectorstores import FAISS
 from langchain_core.documents import Document
 
 import config

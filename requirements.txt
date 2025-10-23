@@ -1,23 +1,26 @@
-# --- 1단계: 핵심 패키지 및 LangChain 커뮤니티 ---
+# --- 1단계: 핵심 패키지 및 기본 유틸 ---
 streamlit>=1.38.0
 pandas>=2.2.0
 numpy==1.26.4
 Pillow>=10.0.0
 matplotlib>=3.7.2
 
-# **[핵심] langchain-community를 명확하게 먼저 설치**
-langchain-community==0.2.0 
-
-# --- 2단계: LangChain 관련 모듈 (커뮤니티가 설치된 후) ---
-langchain>=0.2.0
+# --- 2단계: LangChain 및 커뮤니티 ---
+# langchain-community는 langchain-core보다 먼저 설치되어야 합니다.
+langchain-community==0.2.0
 langchain-core>=0.2.0
+langchain>=0.2.0
+
+# --- 3단계: LangChain 관련 확장 모듈 ---
 langchain-google-genai>=1.0.0
 langgraph>=0.1.0
 google-generativeai>=0.8.0
 
-# --- 3단계: 복잡한 빌드/특정 버전 의존성 ---
-# faiss-cpu 설치 시 시스템 패키지(packages.txt의 build-essential)가 필요 
-pypdf>=4.2.0         
+# --- 4단계: Vector Store & AI 모델 활용 ---
+faiss-cpu>=1.7.4
+pypdf>=4.2.0
+
+# --- 5단계: MCP 및 커스텀 도구 관련 ---
 mcp>=1.13.1
 fastmcp>=2.11.0
 langchain-mcp-adapters>=0.1.0
