@@ -118,6 +118,10 @@ graph LR
     %% ========================
     subgraph SG_Tools ["🔧 등록된 도구 목록 (tools/)"]
         direction TB
+        
+        %% ★★★ 보이지 않는 진입/진출 노드 정의 ★★★
+        T_IN( )
+        
         T1["recommend_festivals\n(축제 추천)"]
         T2["search_contextual_marketing_strategy\n(RAG 마케팅 전략)"]
         T3["create_festival_specific_marketing_strategy\n(단일 축제 전략)"]
@@ -126,37 +130,23 @@ graph LR
         T5["analyze_festival_profile\n(축제 분석)"]
         T6["get_festival_profile_by_name\n(축제 프로필 조회)"]
         
-        T1 ~~~ T2
-        T2 ~~~ T3
-        T3 ~~~ T3_multi
-        T3_multi ~~~ T4
-        T4 ~~~ T5
-        T5 ~~~ T6
+        T_OUT( )
+        
+        %% ★★★ 세로 정렬 강제를 위한 보이지 않는 링크 ★★★
+        T_IN ~~~ T1 ~~~ T2 ~~~ T3 ~~~ T3_multi ~~~ T4 ~~~ T5 ~~~ T6 ~~~ T_OUT
     end
 
     %% ========================
-    %% 4. E2E 연결 관계 (Fan-out / Fan-in)
+    %% 4. E2E 연결 관계 (보이지 않는 노드 활용)
     %% ========================
     A -- "자연어 질문 입력" --> C
     C -- "의도 분석 요청" --> D
     C -- "최종 보고서 생성 요청" --> LLM_Final
     LLM_Final -- "최종 결과 전달" --> A
     
-    D -- " " --> T1
-    D -- " " --> T2
-    D -- " " --> T3
-    D -- " " --> T3_multi
-    D -- " " --> T4
-    D -- " " --> T5
-    D -- " " --> T6
-    
-    T1 -- "도구 실행 결과" --> C
-    T2 -- " " --> C
-    T3 -- " " --> C
-    T3_multi -- " " --> C
-    T4 -- " " --> C
-    T5 -- " " --> C
-    T6 -- " " --> C
+    %% ★★★ 핵심 수정: 보이지 않는 노드(T_IN, T_OUT)에 연결 ★★★
+    D -- "적합 도구 선택/실행" --> T_IN
+    T_OUT -- "도구 실행 결과" --> C
 
     %% ========================
     %% 5. 스타일 지정
@@ -172,6 +162,10 @@ graph LR
     style SG_Tools fill:#E1F5FE, stroke:#0277BD,color:#000
 
     style T1,T2,T3,T3_multi,T4,T5,T6 fill:#03A9F4,color:#fff,stroke:#0288D1,stroke-width:2px,shape:hexagon
+    
+    %% ★★★ 보이지 않는 노드 스타일 ★★★
+    style T_IN fill:none,stroke:none
+    style T_OUT fill:none,stroke:none
 ```
 
 ---
