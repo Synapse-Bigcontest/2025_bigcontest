@@ -105,7 +105,7 @@ graph TD
             T5["analyze_festival_profile\n(축제 분석)"]
             T2["search_contextual_marketing_strategy\n(RAG 마케팅 전략)"]
             T3["create_festival_specific_marketing_strategy\n(단일 축제 전략)"]
-            T3_multi["create_marketing_strategies_for_multiple_festivals\n(다수 축제 전략)"] %% 도구 추가
+            T3_multi["create_marketing_strategies_for_multiple_festivals\n(다수 축제 전략)"]
             T4["analyze_merchant_profile\n(가게 분석)"]
         end
 
@@ -117,8 +117,8 @@ graph TD
     %% ========================
     A -- "자연어 질문 입력" --> C
     C -- "의도 분석 요청" --> D
-    D -- "적합 도구 선택/실행" --> SG_Tools  %% 라우터가 도구 그룹과 연결
-    SG_Tools -- "도구 실행 결과" --> C       %% 도구 그룹 결과가 Orchestrator로
+    D -- "적합 도구 선택/실행" --> SG_Tools 
+    SG_Tools -- "도구 실행 결과" --> C    
     C -- "최종 보고서 생성 요청" --> LLM_Final
     LLM_Final -- "최종 결과 전달" --> A
 
