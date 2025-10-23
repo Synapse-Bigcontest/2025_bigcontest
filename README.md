@@ -30,6 +30,16 @@ AI 에이전트가 사용하는 주요 도구와 내부 처리 과정은 다음�
 
 ---
 
+## 🧠 핵심 아이디어
+
+> "LLM이 스스로 도구를 선택하고 실행하는 **Agentic RAG**"
+
+* **LangChain의 Tool-Calling Agent 구조**: LLM이 사용자의 복잡한 요청을 이해하고, 필요한 기능(도구)을 자율적으로 호출하며 작업을 수행합니다.
+* **컨텍스트 기반 의사결정**: 가게 프로필(JSON) 데이터를 핵심 컨텍스트로 활용하여, 모든 분석과 추천이 현재 분석 중인 가게에 맞춰 이루어집니다.
+* **하이브리드 추천 엔진**: FAISS 벡터 검색(유사도 기반)과 LLM 재평가(가게 맞춤성 기반)를 결합하여 추천의 정확성과 관련성을 극대화합니다.
+
+---
+
 ## 📂 프로젝트 구조 및 코드 설명
 
 ```plaintext
@@ -107,8 +117,7 @@ graph LR
     %% 3. (우측) 도구 목록 (세로 정렬 강제)
     %% ========================
     subgraph SG_Tools ["🔧 등록된 도구 목록 (tools/)"]
-        %% 'direction TB'가 렌더러에서 무시되는 문제를 해결하기 위해
-        %% 보이지 않는 링크로 수동 정렬합니다.
+        direction TB
         T1["recommend_festivals\n(축제 추천)"]
         T2["search_contextual_marketing_strategy\n(RAG 마케팅 전략)"]
         T3["create_festival_specific_marketing_strategy\n(단일 축제 전략)"]
@@ -117,17 +126,24 @@ graph LR
         T5["analyze_festival_profile\n(축제 분석)"]
         T6["get_festival_profile_by_name\n(축제 프로필 조회)"]
         
+        T1 ~~~ T2
+        T2 ~~~ T3
+        T3 ~~~ T3_multi
+        T3_multi ~~~ T4
+        T4 ~~~ T5
+        T5 ~~~ T6
     end
 
     %% ========================
-    %% 4. E2E 연결 관계 (흐름)
+    %% 4. E2E 연결 관계 (흐름 수정)
     %% ========================
     A -- "자연어 질문 입력" --> C
     C -- "의도 분석 요청" --> D
-    D -- "적합 도구 선택/실행" --> SG_Tools
-    SG_Tools -- "도구 실행 결과" --> C
     C -- "최종 보고서 생성 요청" --> LLM_Final
     LLM_Final -- "최종 결과 전달" --> A
+    
+    D -- "적합 도구 선택/실행" --> T1
+    T6 -- "도구 실행 결과" --> C
 
     %% ========================
     %% 5. 스타일 지정
@@ -462,11 +478,3 @@ uv run streamlit run streamlit_app.py
 | "요즘 뜨는 홍보 방법 알려줘"        | `search_contextual_marketing_strategy` (RAG)            | 가게 특성 기반 최신 마케팅 트렌드/팁 |
 
 ---
-
-## 🧠 핵심 아이디어
-
-> "LLM이 스스로 도구를 선택하고 실행하는 **Agentic RAG**"
-
-* **LangChain의 Tool-Calling Agent 구조**: LLM이 사용자의 복잡한 요청을 이해하고, 필요한 기능(도구)을 자율적으로 호출하며 작업을 수행합니다.
-* **컨텍스트 기반 의사결정**: 가게 프로필(JSON) 데이터를 핵심 컨텍스트로 활용하여, 모든 분석과 추천이 현재 분석 중인 가게에 맞춰 이루어집니다.
-* **하이브리드 추천 엔진**: FAISS 벡터 검색(유사도 기반)과 LLM 재평가(가게 맞춤성 기반)를 결합하여 추천의 정확성과 관련성을 극대화합니다.
