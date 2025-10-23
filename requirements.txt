@@ -16,8 +16,7 @@ langgraph>=0.1.0
 google-generativeai>=0.8.0
 
 # --- 3단계: 복잡한 빌드/특정 버전 의존성 ---
-# faiss-cpu 설치 시 시스템 패키지(packages.txt의 build-essential)가 필요
-# faiss-cpu==1.7.4 
+# faiss-cpu 설치 시 시스템 패키지(packages.txt의 build-essential)가 필요 
 pypdf>=4.2.0         
 mcp>=1.13.1
 fastmcp>=2.11.0
