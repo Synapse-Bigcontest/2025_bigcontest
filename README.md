@@ -136,8 +136,8 @@ graph TD
     D -- "3. 적합 도구 선택/실행" --> SG_Tools
     SG_Tools -- "4. 도구 실행 결과 반환" --> C
     C -- "5. 최종 보고서 생성 요청" --> LLM_Final
-    LLM_Final -- "6. 최종 보고서 반환" --> C  %% <-- Orchestrator가 결과를 받음
-    C -- "7. 최종 결과 전달" --> A          %% <-- Orchestrator가 UI로 전달
+    LLM_Final -- "6. 최종 보고서 반환" --> C  
+    C -- "7. 최종 결과 전달" --> A       
 
     %% ========================
     %% 스타일 지정 (GitHub 호환)
