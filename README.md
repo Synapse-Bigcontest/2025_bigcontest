@@ -92,62 +92,81 @@ MarketSync/
 사용자가 UI를 통해 질문하면, **에이전트(Orchestrator)** 가 작동하고, 필요 시 FastAPI 서버나 **여러 도구(Tool)** 와 상호작용합니다.
 
 ```mermaid
-graph TD
+graph LR
     %% ========================
-    %% 1. 사용자 인터페이스 & 데이터 서버 (상단)
-    %% - direction LR: 내부 요소(A, B)를 좌우로 배치
+    %% 1. (좌측) 사용자 인터페이스
     %% ========================
     subgraph SG_UserServer ["💻 사용자 인터페이스 & 데이터 서버"]
-        direction LR
-        A["🖥️ Streamlit UI\n(streamlit_app.py)\n사용자 상호작용"] <--> B["🚀 FastAPI Server\n(api/server.py)\n📊 가게 프로필 / 목록 조회"]
+        direction TB
+        A["🖥️ Streamlit UI\n(streamlit_app.py)\n사용자 상호작용"]
+        B["🚀 FastAPI Server\n(api/server.py)\n📊 가게 프로필 / 목록 조회"]
+        A <--> B
     end
 
     %% ========================
-    %% 2. AI 컨설팅 엔진 (하단)
-    %% - direction TB: 내부 요소(C, D, SG_Tools, LLM_Final)를 상하로 배치
+    %% 2. (중간) AI 컨설팅 엔진 (코어)
     %% ========================
-    subgraph SG_Engine ["🧠 AI 컨설팅 엔진"]
+    subgraph SG_Engine_Core ["🧠 AI 컨설팅 엔진 (코어)"]
         direction TB
         C["🤖 Orchestrator (핵심 에이전트)\n(orchestrator.py)\nAgentExecutor (LangChain)"]
         D{"🚦 Tool Routing\nLLM 의도 분석 & 도구 선택"}
-
-        subgraph SG_Tools ["🔧 등록된 도구 목록 (tools/)"]
-            %% direction이 명시되지 않으면 부모(SG_Engine)의 TB를 상속받아 세로 정렬됨
-            T1["recommend_festivals\n(축제 추천)"]
-            T2["search_contextual_marketing_strategy\n(RAG 마케팅 전략)"]
-            T3["create_festival_specific_marketing_strategy\n(단일 축제 전략)"]
-            T3_multi["create_marketing_strategies_for_multiple_festivals\n(다수 축제 전략)"]
-            T4["analyze_merchant_profile\n(가게 분석)"]
-            T5["analyze_festival_profile\n(축제 분석)"]
-            T6["get_festival_profile_by_name\n(축제 프로필 조회)"]
-        end
-
         LLM_Final["🪄 LLM (Final Report Generation)\n최종 보고서 생성"]
     end
 
     %% ========================
-    %% 3. 전체 흐름 연결
+    %% 3. (우측) 도구 목록 (세로 정렬 강제)
+    %% ========================
+    subgraph SG_Tools ["🔧 등록된 도구 목록 (tools/)"]
+        direction TB
+        
+        %% 보이지 않는 진입/진출 노드 정의
+        T_IN( )
+        
+        T1["recommend_festivals\n(축제 추천)"]
+        T2["search_contextual_marketing_strategy\n(RAG 마케팅 전략)"]
+        T3["create_festival_specific_marketing_strategy\n(단일 축제 전략)"]
+        T3_multi["create_marketing_strategies_for_multiple_festivals\n(다수 축제 전략)"]
+        T4["analyze_merchant_profile\n(가게 분석)"]
+        T5["analyze_festival_profile\n(축제 분석)"]
+        T6["get_festival_profile_by_name\n(축제 프로필 조회)"]
+        
+        T_OUT( )
+        
+        %% 세로 정렬 강제를 위한 보이지 않는 링크
+        T_IN ~~~ T1 ~~~ T2 ~~~ T3 ~~~ T3_multi ~~~ T4 ~~~ T5 ~~~ T6 ~~~ T_OUT
+    end
+
+    %% ========================
+    %% 4. 전체 흐름 연결 (LR 레이아웃 기준)
     %% ========================
     A -- "1. 자연어 질문 입력" --> C
     C -- "2. 의도 분석 요청" --> D
-    D -- "3. 적합 도구 선택/실행" --> SG_Tools
-    SG_Tools -- "4. 도구 실행 결과 반환" --> C
     C -- "5. 최종 보고서 생성 요청" --> LLM_Final
     LLM_Final -- "6. 최종 보고서 반환" --> C
     C -- "7. 최종 결과 전달" --> A
+    
+    %% 라우터 -> 도구 (진입점) / 도구 (진출점) -> Orchestrator
+    D -- "3. 적합 도구 선택/실행" --> T_IN
+    T_OUT -- "4. 도구 실행 결과 반환" --> C
 
     %% ========================
-    %% 4. 스타일 지정
+    %% 5. 스타일 지정
     %% ========================
     style A fill:#4CAF50,color:#fff,stroke:#388E3C,stroke-width:2px
     style B fill:#FF9800,color:#fff,stroke:#EF6C00,stroke-width:2px
     style C fill:#E91E63,color:#fff,stroke:#C2185B,stroke-width:2px
     style D fill:#9C27B0,color:#fff,stroke:#7B1FA2,stroke-width:2px,shape:diamond
-    style SG_Tools fill:#E1F5FE, stroke:#0277BD,color:#000
-    style T1,T2,T3,T3_multi,T4,T5,T6 fill:#03A9F4,color:#fff,stroke:#0288D1,stroke-width:2px,shape:hexagon
     style LLM_Final fill:#BA68C8,color:#fff,stroke:#8E24AA,stroke-width:2px
+    
     style SG_UserServer fill:#E8F5E9,stroke:#43A047,stroke-width:2px,color:#000
-    style SG_Engine fill:#FFF3E0,stroke:#FB8C00,stroke-width:2px,color:#000
+    style SG_Engine_Core fill:#FFF3E0,stroke:#FB8C00,stroke-width:2px,color:#000
+    style SG_Tools fill:#E1F5FE, stroke:#0277BD,color:#000
+
+    style T1,T2,T3,T3_multi,T4,T5,T6 fill:#03A9F4,color:#fff,stroke:#0288D1,stroke-width:2px,shape:hexagon
+    
+    %% 보이지 않는 노드 스타일
+    style T_IN fill:none,stroke:none
+    style T_OUT fill:none,stroke:none
 ```
 
 ---
